@@ -9,6 +9,8 @@ import {createTripEventTemplate } from './view/trip-event.js';
 import {createTripInfoTemplate} from './view/trip-header.js';
 
 const EVENTS_COUNT = 3;
+const POINT_COUNT = 20;
+
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -39,5 +41,4 @@ const renderSomeEvents = (count) => {
 
 renderSomeEvents(EVENTS_COUNT);
 
-console.log(generatePoint());
-
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
