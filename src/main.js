@@ -1,3 +1,4 @@
+import {generatePoint} from './mock/data.js';
 import {createCreationFormTemplate } from './view/creation-form.js';
 import {createEditFormTemplate } from './view/edit-form.js';
 import {createEventsListTemplate } from './view/events-list.js';
@@ -38,4 +39,5 @@ const renderSomeEvents = (count) => {
 
 renderSomeEvents(EVENTS_COUNT);
 
+console.log(generatePoint());
 
