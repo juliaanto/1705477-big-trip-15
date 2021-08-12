@@ -63,3 +63,5 @@ export const DESCRIPTIONS_MIN_COUNT = 1;
 export const DESCRIPTIONS_MAX_COUNT = 5;
 
 export const PICTURES_MAX_COUNT = 5;
+
+export const DAYS_MAX_GAP = 90;

@@ -1,4 +1,5 @@
-import {PICTURES_MAX_COUNT} from './const.js';
+import dayjs from 'dayjs';
+import {DAYS_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
 
 export /**
  * Генерирует случайное число из диапазона
@@ -54,3 +55,8 @@ export const generatePictures = () => {
   return pictures;
 };
 
+export const getRandomDate = () => {
+  const daysGap = getRandomInteger(0, DAYS_MAX_GAP);
+  const randomDate = dayjs().add(daysGap, 'day').toDate();
+  return randomDate;
+};
