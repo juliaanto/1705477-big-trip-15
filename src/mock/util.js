@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {DAYS_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
+import {MINUTES_FROM_MAX_GAP, MINUTES_TO_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
 
 export /**
  * Генерирует случайное число из диапазона
@@ -55,8 +55,14 @@ export const generatePictures = () => {
   return pictures;
 };
 
-export const getRandomDate = () => {
-  const daysGap = getRandomInteger(0, DAYS_MAX_GAP);
-  const randomDate = dayjs().add(daysGap, 'day').toDate();
-  return randomDate;
+export const getRandomTime = () => {
+  const minutesGap = getRandomInteger(0, MINUTES_FROM_MAX_GAP);
+  const randomTime = dayjs().add(minutesGap, 'minute').toDate();
+  return randomTime;
+};
+
+export const getTimeTo = (timeFrom) => {
+  const minutesGap = getRandomInteger(0, MINUTES_TO_MAX_GAP);
+  const randomTime = dayjs(timeFrom).add(minutesGap, 'minute').toDate();
+  return randomTime;
 };

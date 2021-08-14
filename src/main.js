@@ -33,12 +33,14 @@ const eventsListElement = siteMainElement.querySelector('.trip-events__list');
 render(eventsListElement, createEditFormTemplate(), 'beforeend');
 render(eventsListElement, createCreationFormTemplate(), 'beforeend');
 
-const renderSomeEvents = (count) => {
-  for (let i = 0; i < count; i++) {
-    render(eventsListElement, createTripEventTemplate(), 'beforeend');
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
+
+console.log(points);
+
+const renderSomeEvents = () => {
+  for (let i = 0; i < EVENTS_COUNT; i++) {
+    render(eventsListElement, createTripEventTemplate(points[i]), 'beforeend');
   }
 };
 
-renderSomeEvents(EVENTS_COUNT);
-
-const points = new Array(POINT_COUNT).fill().map(generatePoint);
+renderSomeEvents();

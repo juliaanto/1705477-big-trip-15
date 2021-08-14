@@ -64,4 +64,6 @@ export const DESCRIPTIONS_MAX_COUNT = 5;
 
 export const PICTURES_MAX_COUNT = 5;
 
-export const DAYS_MAX_GAP = 90;
+export const MINUTES_FROM_MAX_GAP = 90 * 24 * 60;
+
+export const MINUTES_TO_MAX_GAP = 2 * 24 * 60;
