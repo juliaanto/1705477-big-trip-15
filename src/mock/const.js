@@ -20,23 +20,20 @@ export const CITIES = [
 
 export const OFFERS = [
   {
-    'title': 'Upgrade to a business class',
-    'price': 120,
+    title: 'Upgrade to a business class',
+    price: 120,
   }, {
-    'title': 'Choose the radio station',
-    'price': 60,
+    title: 'Choose the radio station',
+    price: 60,
   }, {
-    'title': 'Choose meal',
-    'price': 180,
+    title: 'Choose meal',
+    price: 180,
   }, {
-    'title': 'Upgrade to comfort class',
-    'price': 50,
+    title: 'Upgrade to comfort class',
+    price: 50,
   }, {
-    'title': 'Add luggage',
-    'price': 50,
-  }, {
-    'title': 'Travel by train',
-    'price': 40,
+    title: 'Add luggage',
+    price: 50,
   },
 ];
 
