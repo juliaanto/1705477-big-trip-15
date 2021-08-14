@@ -61,7 +61,7 @@ const renderSomeEvents = () => {
     // }
   }
 
-  for (let i = 0; i < EVENTS_COUNT; i++) {
+  for (let i = 1; i < 1 + EVENTS_COUNT; i++) {
     render(eventsListElement, createTripEventTemplate(points[i]), 'beforeend');
     const offersListElement = eventsListElement.querySelectorAll('.event__selected-offers');
     const lastElement = offersListElement[offersListElement.length - 1];
