@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
+import {OFFERS} from '../mock/const.js';
 
 export const createEditFormTemplate = (point) => {
-  const {type, city, timeFrom, timeTo, price, destination} = point;
+  const {type, city, timeFrom, timeTo, price, destination, offers} = point;
 
   const timeFromFormatted = timeFrom !== null
     ? dayjs(timeFrom).format('DD/MM/YY HH:mm')
@@ -12,6 +13,28 @@ export const createEditFormTemplate = (point) => {
     : '';
 
   const description = destination.description;
+
+  const createAvailableOffersTemplate = (selectedOffers) => {
+
+    const selectedOffersTitles = new Array(selectedOffers.lenght);
+
+    selectedOffers.map((selectedOffer) => selectedOffersTitles.push(selectedOffer.title));
+
+    const isOfferChecked = (offerTitle) => selectedOffersTitles.includes(offerTitle);
+
+    return OFFERS.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage"
+    ${isOfferChecked(offer.title) ? 'checked' : ''}
+    >
+    <label class="event__offer-label" for="event-offer-luggage-1">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`).join('');
+  };
+
+  const offersTemplate = createAvailableOffersTemplate(offers);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -119,6 +142,7 @@ export const createEditFormTemplate = (point) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
+          ${offersTemplate}
           </div>
         </section>
 
