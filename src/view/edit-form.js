@@ -1,15 +1,15 @@
-import dayjs from 'dayjs';
 import {OFFERS} from '../mock/const.js';
+import {getFullDateFormatted} from '../utils.js';
 
 export const createEditFormTemplate = (point) => {
   const {type, city, timeFrom, timeTo, price, destination, offers} = point;
 
   const timeFromFormatted = timeFrom !== null
-    ? dayjs(timeFrom).format('DD/MM/YY HH:mm')
+    ? getFullDateFormatted(timeFrom)
     : '';
 
   const timeToFormatted = timeTo !== null
-    ? dayjs(timeTo).format('DD/MM/YY HH:mm')
+    ? getFullDateFormatted(timeTo)
     : '';
 
   const description = destination.description;

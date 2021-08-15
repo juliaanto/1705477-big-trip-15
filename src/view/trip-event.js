@@ -1,36 +1,19 @@
-/*global require*/
-import dayjs from 'dayjs';
-
-const duration = require('dayjs/plugin/duration');
-dayjs.extend(duration);
+import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils.js';
 
 export const createTripEventTemplate = (point) => {
   const {timeFrom, timeTo, type, city, price, isFavorite} = point;
 
   const dateFromFormatted = timeFrom !== null
-    ? dayjs(timeFrom).format('MMM D')
+    ? getDateFormatted(timeFrom)
     : '';
 
   const timeFromFormatted = timeFrom !== null
-    ? dayjs(timeFrom).format('HH:mm')
+    ? getTimeFormatted(timeFrom)
     : '';
 
   const timeToFormatted = timeTo !== null
-    ? dayjs(timeTo).format('HH:mm')
+    ? getTimeFormatted(timeTo)
     : '';
-
-  const durationUnformatted = dayjs.duration(dayjs(timeTo).diff(dayjs(timeFrom)));
-  const durationInHours = durationUnformatted.as('hours');
-
-  let eventDuration = '';
-
-  if (durationInHours < 1) {
-    eventDuration = durationUnformatted.format('mm[M]');
-  } else if (durationInHours >= 1 && durationInHours < 24) {
-    eventDuration = durationUnformatted.format('HH[H] mm[M]');
-  } else {
-    eventDuration = durationUnformatted.format('DD[D] HH[H] mm[M]');
-  }
 
   const favoriteEvent = isFavorite
     ? `<button class="event__favorite-btn  event__favorite-btn--active" type="button">
@@ -46,7 +29,6 @@ export const createTripEventTemplate = (point) => {
         </svg>
       </button>`;
 
-
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">${dateFromFormatted}</time>
@@ -60,7 +42,7 @@ export const createTripEventTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="2019-03-18T11:00">${timeToFormatted}</time>
         </p>
-        <p class="event__duration">${eventDuration}</p>
+        <p class="event__duration">${getEventDuration(timeTo, timeFrom)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>
