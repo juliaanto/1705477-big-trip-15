@@ -39,6 +39,7 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 console.log(points);
 
 const renderSomeEvents = () => {
+
   render(eventsListElement, createEditFormTemplate(points[0]), 'beforeend');
 
   for (let i = 1; i < 1 + EVENTS_COUNT; i++) {

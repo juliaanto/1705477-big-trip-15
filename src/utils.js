@@ -26,3 +26,5 @@ export const getEventDuration = (timeTo, timeFrom) => {
 
   return eventDuration;
 };
+
+export const isFuture = (date) => dayjs().isBefore(date);

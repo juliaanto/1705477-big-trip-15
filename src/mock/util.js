@@ -56,7 +56,7 @@ export const generatePictures = () => {
 };
 
 export const getRandomTime = () => {
-  const minutesGap = getRandomInteger(0, MINUTES_FROM_MAX_GAP);
+  const minutesGap = getRandomInteger(-MINUTES_FROM_MAX_GAP, MINUTES_FROM_MAX_GAP);
   const randomTime = dayjs().add(minutesGap, 'minute').toDate();
   return randomTime;
 };
