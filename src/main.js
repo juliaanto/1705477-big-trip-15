@@ -24,7 +24,7 @@ const filtersElement = siteHeaderElement.querySelector('.trip-controls__filters'
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 render(siteNavigationElement, createNavigationTemplate(), 'beforeend');
-render(tripHeaderElement, createTripInfoTemplate(), 'afterbegin');
+
 render(filtersElement, createFiltersTemplate(), 'beforeend');
 render(tripEventsElement, createSortTemplate(), 'beforeend');
 
@@ -38,6 +38,9 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 console.log(points);
 
+export const tripCities = [];
+export let tripPrice = 0;
+
 const renderSomeEvents = () => {
 
   render(eventsListElement, createEditFormTemplate(points[0]), 'beforeend');
@@ -48,6 +51,9 @@ const renderSomeEvents = () => {
     const lastElement = offersListElement[offersListElement.length - 1];
     const offersCount = points[i].offers.length;
 
+    tripCities.push(points[i].city);
+    tripPrice += points[i].price;
+
     for (let j = 0; j < offersCount; j++) {
       render(lastElement, createSelectedOfferTemplate(points[i].offers[j]), 'beforeend');
     }
@@ -55,3 +61,5 @@ const renderSomeEvents = () => {
 };
 
 renderSomeEvents();
+
+render(tripHeaderElement, createTripInfoTemplate(), 'afterbegin');
