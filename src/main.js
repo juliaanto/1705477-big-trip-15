@@ -36,8 +36,6 @@ render(eventsListElement, createCreationFormTemplate(), 'beforeend');
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-console.log(points);
-
 export const tripCities = [];
 export let tripPrice = 0;
 
