@@ -4,7 +4,6 @@ import {createEditFormTemplate} from './view/edit-form.js';
 import {createEventsListTemplate} from './view/events-list.js';
 import {createFiltersTemplate} from './view/filters.js';
 import {createNavigationTemplate} from './view/navigation.js';
-import {createSelectedOfferTemplate} from './view/selected-offer.js';
 import {createSortTemplate} from './view/sort.js';
 import {createTripEventTemplate} from './view/trip-event.js';
 import {createTripHeaderTemplate} from './view/trip-header.js';
@@ -34,19 +33,14 @@ render(eventsListElement, createCreationFormTemplate(), 'beforeend');
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
+console.log(points);
+
 const renderSomeEvents = () => {
 
   render(eventsListElement, createEditFormTemplate(points[0]), 'beforeend');
 
   for (let i = 1; i < POINT_COUNT; i++) {
     render(eventsListElement, createTripEventTemplate(points[i]), 'beforeend');
-    const offersListElement = eventsListElement.querySelectorAll('.event__selected-offers');
-    const lastElement = offersListElement[offersListElement.length - 1];
-    const offersCount = points[i].offers.length;
-
-    for (let j = 0; j < offersCount; j++) {
-      render(lastElement, createSelectedOfferTemplate(points[i].offers[j]), 'beforeend');
-    }
   }
 };
 
