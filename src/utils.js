@@ -1,7 +1,6 @@
-/*global require*/
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
-const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
 export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YY HH:mm');
