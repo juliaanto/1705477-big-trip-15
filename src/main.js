@@ -1,6 +1,5 @@
 import {generatePoint} from './mock/data.js';
 import {render, RenderPosition} from './utils.js';
-import CreationFormView from './view/creation-form.js';
 import EditFormView from './view/edit-form.js';
 import EventsListView from './view/events-list.js';
 import FiltersView from './view/filters.js';
@@ -26,21 +25,34 @@ render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND)
 render(tripEventsElement, new EventsListView().getElement(), RenderPosition.BEFOREEND);
 const eventsListElement = siteMainElement.querySelector('.trip-events__list');
 
-render(eventsListElement, new CreationFormView().getElement(), RenderPosition.BEFOREEND);
-
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-console.log(points);
+const renderEvent = (element, event) => {
+  const eventComponent = new TripEventView(event);
+  const eventEditComponent = new EditFormView(event);
 
-const renderSomeEvents = () => {
+  const replaceEventToForm = () => {
+    element.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
 
-  render(eventsListElement, new EditFormView(points[0]).getElement(), RenderPosition.BEFOREEND);
+  const replaceFormToEvent = () => {
+    element.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
 
-  for (let i = 1; i < POINT_COUNT; i++) {
-    render(eventsListElement, new TripEventView(points[i]).getElement(), RenderPosition.BEFOREEND);
-  }
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceEventToForm();
+  });
+
+  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToEvent();
+  });
+
+  render(element, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-renderSomeEvents();
+for (let i = 1; i < POINT_COUNT; i++) {
+  renderEvent(eventsListElement, points[i]);
+}
 
 render(tripHeaderElement, new TripHeaderView(points).getElement(), RenderPosition.AFTERBEGIN);
