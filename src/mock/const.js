@@ -1,13 +1,13 @@
 export const TYPES = [
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Drive',
-  'Flight',
-  'Check-in',
-  'Sightseeing',
-  'Restaurant',
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
 ];
 
 export const CITIES = [
@@ -20,26 +20,124 @@ export const CITIES = [
 
 export const OFFERS = [
   {
-    title: 'Upgrade to a business class',
-    price: 120,
-  }, {
-    title: 'Choose the radio station',
-    price: 60,
-  }, {
-    title: 'Choose meal',
-    price: 180,
-  }, {
-    title: 'Upgrade to comfort class',
-    price: 50,
-  }, {
-    title: 'Add luggage',
-    price: 50,
+    type: 'taxi',
+    offers: [
+      {
+        title: 'Choose the radio station',
+        price: 60,
+      }, {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'bus',
+    offers: [
+      {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      }, {
+        title: 'Add luggage',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'train',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 120,
+      }, {
+        title: 'Choose the radio station',
+        price: 60,
+      }, {
+        title: 'Choose meal',
+        price: 180,
+      }, {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      }, {
+        title: 'Add luggage',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'ship',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 120,
+      }, {
+        title: 'Choose the radio station',
+        price: 60,
+      }, {
+        title: 'Choose meal',
+        price: 180,
+      }, {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      }, {
+        title: 'Add luggage',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'drive',
+    offers: [
+      {
+        title: 'Choose the radio station',
+        price: 60,
+      },
+    ],
+  },
+  {
+    type: 'flight',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 120,
+      }, {
+        title: 'Choose meal',
+        price: 180,
+      }, {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      }, {
+        title: 'Add luggage',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'check-in',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 120,
+      }, {
+        title: 'Upgrade to comfort class',
+        price: 50,
+      }, {
+        title: 'Add luggage',
+        price: 50,
+      },
+    ],
+  },
+  {
+    type: 'sightseeing',
+    offers: [
+    ],
+  },
+  {
+    type: 'restaurant',
+    offers: [
+    ],
   },
 ];
-
-export const OFFERS_MIN_COUNT = 0;
-
-export const OFFERS_MAX_COUNT = 5;
 
 export const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',

@@ -2,7 +2,7 @@ import {OFFERS} from '../mock/const.js';
 import {getFullDateFormatted} from '../utils.js';
 
 export const createEditFormTemplate = (point) => {
-  const {type, city, timeFrom, timeTo, price, destination, offers} = point;
+  const {type, city, timeFrom, timeTo, price, destination} = point;
 
   const timeFromFormatted = timeFrom !== null
     ? getFullDateFormatted(timeFrom)
@@ -14,27 +14,28 @@ export const createEditFormTemplate = (point) => {
 
   const description = destination.description;
 
-  const createAvailableOffersTemplate = (selectedOffers) => {
+  const createAvailableOffersTemplate = () => {
 
-    const selectedOffersTitles = new Array(selectedOffers.lenght);
+    let selectedOffersTemplate = '';
 
-    selectedOffers.map((selectedOffer) => selectedOffersTitles.push(selectedOffer.title));
+    for (const offerElement of OFFERS) {
+      if (type === offerElement.type) {
+        const offers = offerElement.offers;
 
-    const isOfferChecked = (offerTitle) => selectedOffersTitles.includes(offerTitle);
-
-    return OFFERS.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage"
-    ${isOfferChecked(offer.title) ? 'checked' : ''}
-    >
-    <label class="event__offer-label" for="event-offer-luggage-1">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
-  </div>`).join('');
+        for (const offer of offers) {
+          selectedOffersTemplate += `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage">
+            <label class="event__offer-label" for="event-offer-luggage-1">
+              <span class="event__offer-title">${offer.title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${offer.price}</span>
+            </label>
+          </div>`;
+        }
+      }
+    }
+    return selectedOffersTemplate;
   };
-
-  const offersTemplate = createAvailableOffersTemplate(offers);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -142,7 +143,7 @@ export const createEditFormTemplate = (point) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-          ${offersTemplate}
+          ${createAvailableOffersTemplate()}
           </div>
         </section>
 

@@ -1,7 +1,8 @@
+import { OFFERS } from '../mock/const.js';
 import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils.js';
 
 export const createTripEventTemplate = (point) => {
-  const {timeFrom, timeTo, type, city, price, isFavorite, offers} = point;
+  const {timeFrom, timeTo, type, city, price, isFavorite} = point;
 
   const favoriteEvent = isFavorite
     ? `<button class="event__favorite-btn  event__favorite-btn--active" type="button">
@@ -17,18 +18,23 @@ export const createTripEventTemplate = (point) => {
         </svg>
       </button>`;
 
-  const createSelectedOffersTemplate = (selectedOffers) => {
+  const createSelectedOffersTemplate = () => {
 
     let selectedOffersTemplate = '';
 
-    for (const offer of selectedOffers) {
-      selectedOffersTemplate += `<li class="event__offer">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </li>`;
-    }
+    for (const offerElement of OFFERS) {
+      if (type === offerElement.type) {
+        const offers = offerElement.offers;
 
+        for (const offer of offers) {
+          selectedOffersTemplate += `<li class="event__offer">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
+          </li>`;
+        }
+      }
+    }
     return selectedOffersTemplate;
   };
 
@@ -53,7 +59,7 @@ export const createTripEventTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${createSelectedOffersTemplate(offers)}
+        ${createSelectedOffersTemplate()}
         </ul>
         ${favoriteEvent}
         <button class="event__rollup-btn" type="button">
