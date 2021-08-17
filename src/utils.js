@@ -4,11 +4,11 @@ import dayjs from 'dayjs';
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-export const getFullDateFormatted = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YY HH:mm');
 
-export const getDateFormatted = (date) => dayjs(date).format('MMM D');
+export const getDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('MMM D');
 
-export const getTimeFormatted = (date) => dayjs(date).format('HH:mm');
+export const getTimeFormatted = (date) => date === undefined ? '' : dayjs(date).format('HH:mm');
 
 export const getEventDuration = (timeTo, timeFrom) => {
   const durationUnformatted = dayjs.duration(dayjs(timeTo).diff(dayjs(timeFrom)));

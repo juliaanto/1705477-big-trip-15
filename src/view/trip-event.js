@@ -3,18 +3,6 @@ import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils.js'
 export const createTripEventTemplate = (point) => {
   const {timeFrom, timeTo, type, city, price, isFavorite, offers} = point;
 
-  const dateFromFormatted = timeFrom !== null
-    ? getDateFormatted(timeFrom)
-    : '';
-
-  const timeFromFormatted = timeFrom !== null
-    ? getTimeFormatted(timeFrom)
-    : '';
-
-  const timeToFormatted = timeTo !== null
-    ? getTimeFormatted(timeTo)
-    : '';
-
   const favoriteEvent = isFavorite
     ? `<button class="event__favorite-btn  event__favorite-btn--active" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -47,16 +35,16 @@ export const createTripEventTemplate = (point) => {
   return `<ul class="trip-events__list">
     <li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${dateFromFormatted}</time>
+        <time class="event__date" datetime="2019-03-18">${getDateFormatted(timeFrom)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} ${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${timeFromFormatted}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${getTimeFormatted(timeFrom)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${timeToFormatted}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${getTimeFormatted(timeTo)}</time>
           </p>
           <p class="event__duration">${getEventDuration(timeTo, timeFrom)}</p>
         </div>
