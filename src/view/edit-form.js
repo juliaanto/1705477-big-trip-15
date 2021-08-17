@@ -1,7 +1,7 @@
 import {OFFERS} from '../mock/const.js';
-import {getFullDateFormatted} from '../utils.js';
+import {createElement, getFullDateFormatted} from '../utils.js';
 
-export const createEditFormTemplate = (point) => {
+const createEditFormTemplate = (point) => {
   const {type, city, timeFrom, timeTo, price, destination} = point;
 
   const timeFromFormatted = timeFrom !== null
@@ -155,3 +155,26 @@ export const createEditFormTemplate = (point) => {
     </form>
   </li>`;
 };
+
+export default class EditForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

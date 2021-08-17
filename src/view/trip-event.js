@@ -1,7 +1,7 @@
-import { OFFERS } from '../mock/const.js';
-import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils.js';
+import {createElement, getDateFormatted, getTimeFormatted, getEventDuration} from '../utils';
+import {OFFERS} from '../mock/const.js';
 
-export const createTripEventTemplate = (point) => {
+const createTripEventTemplate = (point) => {
   const {timeFrom, timeTo, type, city, price, isFavorite} = point;
 
   const favoriteEvent = isFavorite
@@ -69,3 +69,26 @@ export const createTripEventTemplate = (point) => {
     </li>
   </ul>`;
 };
+
+export default class TripEvent {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from '../utils';
+
 const getTripPrice = (points) => {
   let tripPrice = 0;
 
@@ -9,7 +11,7 @@ const getTripPrice = (points) => {
 
 };
 
-export const createTripHeaderTemplate = (points) => (
+const createTripHeaderTemplate = (points) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${points[0].city}  &mdash; ... &mdash; ${points[points.length - 1].city}</h1>
@@ -22,3 +24,26 @@ export const createTripHeaderTemplate = (points) => (
     </p>
   </section>`
 );
+
+export default class TripHeader {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripHeaderTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
