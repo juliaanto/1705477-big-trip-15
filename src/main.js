@@ -39,12 +39,26 @@ const renderEvent = (element, event) => {
     element.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToEvent();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceEventToForm();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
+    replaceFormToEvent();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceFormToEvent();
   });
 
