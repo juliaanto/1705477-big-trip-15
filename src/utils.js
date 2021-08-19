@@ -1,14 +1,40 @@
-/*global require*/
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
-const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-export const getFullDateFormatted = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
 
-export const getDateFormatted = (date) => dayjs(date).format('MMM D');
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
 
-export const getTimeFormatted = (date) => dayjs(date).format('HH:mm');
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YY HH:mm');
+
+export const getDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('MMM D');
+
+export const getTimeFormatted = (date) => date === undefined ? '' : dayjs(date).format('HH:mm');
 
 export const getEventDuration = (timeTo, timeFrom) => {
   const durationUnformatted = dayjs.duration(dayjs(timeTo).diff(dayjs(timeFrom)));

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {MINUTES_FROM_MAX_GAP, MINUTES_TO_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
 
-export /**
+/**
  * Генерирует случайное число из диапазона
  *
  * @param {number} [a=0] - нижняя граница диапазона
@@ -17,7 +17,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const getRandomIndex = (array) => getRandomInteger(0, array.length - 1);
 
-export /**
+/**
  * Выбирает случайный элемент из переданного массива
  *
  * @param {array} array - массив
@@ -29,7 +29,7 @@ const generateRandomElement = (array) => {
   return array[randomIndex];
 };
 
-export /**
+/**
  * Перемешивает массив
  *
  * @param {array} array - переданный массив
@@ -45,7 +45,7 @@ const shuffle = (array) => {
   return array;
 };
 
-export const generatePictures = () => {
+const generatePictures = () => {
   const pictures = [];
   for (let i = 0; i < PICTURES_MAX_COUNT; i++) {
     const randomNumber = getRandomInteger(1, 10000);
@@ -55,14 +55,16 @@ export const generatePictures = () => {
   return pictures;
 };
 
-export const getRandomTime = () => {
+const getRandomTime = () => {
   const minutesGap = getRandomInteger(-MINUTES_FROM_MAX_GAP, MINUTES_FROM_MAX_GAP);
   const randomTime = dayjs().add(minutesGap, 'minute').toDate();
   return randomTime;
 };
 
-export const getTimeTo = (timeFrom) => {
+const getTimeTo = (timeFrom) => {
   const minutesGap = getRandomInteger(0, MINUTES_TO_MAX_GAP);
   const randomTime = dayjs(timeFrom).add(minutesGap, 'minute').toDate();
   return randomTime;
 };
+
+export {getRandomInteger, generateRandomElement, shuffle, generatePictures, getRandomTime, getTimeTo};
