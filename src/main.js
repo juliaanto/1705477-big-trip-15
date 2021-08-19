@@ -7,6 +7,7 @@ import NavigationView from './view/navigation.js';
 import SortView from './view/sort.js';
 import TripEventView from './view/trip-event.js';
 import TripHeaderView from './view/trip-header.js';
+import NoEventView from './view/no-event.js';
 
 const POINT_COUNT = 20;
 
@@ -20,7 +21,6 @@ const tripEventsElement = siteMainElement.querySelector('.trip-events');
 render(siteNavigationElement, new NavigationView().getElement(), RenderPosition.BEFOREEND);
 
 render(filtersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 render(tripEventsElement, new EventsListView().getElement(), RenderPosition.BEFOREEND);
 const eventsListElement = siteMainElement.querySelector('.trip-events__list');
@@ -65,8 +65,13 @@ const renderEvent = (element, event) => {
   render(element, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-for (let i = 1; i < POINT_COUNT; i++) {
-  renderEvent(eventsListElement, points[i]);
+if (points.length === 0) {
+  render(eventsListElement, new NoEventView().getElement(), RenderPosition.AFTERBEGIN);
+} else {
+  render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  for (let i = 1; i < POINT_COUNT; i++) {
+    renderEvent(eventsListElement, points[i]);
+  }
 }
 
 render(tripHeaderElement, new TripHeaderView(points).getElement(), RenderPosition.AFTERBEGIN);
