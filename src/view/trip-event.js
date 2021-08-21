@@ -1,4 +1,4 @@
-import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils';
+import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils/point';
 import {OFFERS} from '../mock/const.js';
 import AbstractView from './abstract';
 

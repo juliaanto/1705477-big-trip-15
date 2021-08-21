@@ -1,5 +1,5 @@
 import {OFFERS} from '../mock/const.js';
-import {getFullDateFormatted} from '../utils.js';
+import {getFullDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
 const createEditFormTemplate = (point) => {

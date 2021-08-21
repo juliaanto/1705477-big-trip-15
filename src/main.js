@@ -1,5 +1,5 @@
 import {generatePoint} from './mock/data.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, replace} from './utils/render';
 import EditFormView from './view/edit-form.js';
 import EventsListView from './view/events-list.js';
 import FiltersView from './view/filters.js';
@@ -18,11 +18,11 @@ const tripHeaderElement = siteHeaderElement.querySelector('.trip-main');
 const filtersElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-render(siteNavigationElement, new NavigationView().getElement(), RenderPosition.BEFOREEND);
+render(siteNavigationElement, new NavigationView(), RenderPosition.BEFOREEND);
 
-render(filtersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(filtersElement, new FiltersView(), RenderPosition.BEFOREEND);
 
-render(tripEventsElement, new EventsListView().getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new EventsListView(), RenderPosition.BEFOREEND);
 const eventsListElement = siteMainElement.querySelector('.trip-events__list');
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
@@ -32,11 +32,11 @@ const renderEvent = (element, event) => {
   const eventEditComponent = new EditFormView(event);
 
   const replaceEventToForm = () => {
-    element.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceFormToEvent = () => {
-    element.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -61,16 +61,16 @@ const renderEvent = (element, event) => {
     replaceFormToEvent();
   });
 
-  render(element, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(element, eventComponent, RenderPosition.BEFOREEND);
 };
 
 if (points.length === 0) {
-  render(eventsListElement, new NoEventView().getElement(), RenderPosition.AFTERBEGIN);
+  render(eventsListElement, new NoEventView(), RenderPosition.AFTERBEGIN);
 } else {
-  render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new SortView(), RenderPosition.BEFOREEND);
   for (let i = 1; i < POINT_COUNT; i++) {
     renderEvent(eventsListElement, points[i]);
   }
 }
 
-render(tripHeaderElement, new TripHeaderView(points).getElement(), RenderPosition.AFTERBEGIN);
+render(tripHeaderElement, new TripHeaderView(points), RenderPosition.AFTERBEGIN);

@@ -3,33 +3,6 @@ import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-export const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
 export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YY HH:mm');
 
 export const getDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('MMM D');
