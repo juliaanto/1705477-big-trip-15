@@ -2,7 +2,7 @@ import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils/poi
 import {OFFERS} from '../mock/const.js';
 import AbstractView from './abstract';
 
-const createTripEventTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {timeFrom, timeTo, type, city, price, isFavorite} = point;
 
   const favoriteEvent = isFavorite
@@ -71,7 +71,7 @@ const createTripEventTemplate = (point) => {
   </ul>`;
 };
 
-export default class TripEvent extends AbstractView {
+export default class Point extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
@@ -79,7 +79,7 @@ export default class TripEvent extends AbstractView {
   }
 
   getTemplate() {
-    return createTripEventTemplate(this._point);
+    return createPointTemplate(this._point);
   }
 
   _editClickHandler(evt) {
