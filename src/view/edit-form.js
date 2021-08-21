@@ -1,5 +1,6 @@
 import {OFFERS} from '../mock/const.js';
-import {createElement, getFullDateFormatted} from '../utils.js';
+import {getFullDateFormatted} from '../utils.js';
+import AbstractView from './abstract';
 
 const createEditFormTemplate = (point) => {
   const {type, city, timeFrom, timeTo, price, destination} = point;
@@ -156,25 +157,13 @@ const createEditFormTemplate = (point) => {
   </li>`;
 };
 
-export default class EditForm {
+export default class EditForm extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createEditFormTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
