@@ -7,7 +7,7 @@ import NavigationView from './view/navigation.js';
 import SortView from './view/sort.js';
 import PointView from './view/point.js';
 import TripHeaderView from './view/trip-header.js';
-import NoPointView from './view/no-point.js';
+import NoPointsView from './view/no-points.js';
 
 const POINT_COUNT = 20;
 
@@ -65,9 +65,9 @@ const renderPoint = (element, point) => {
 };
 
 if (points.length === 0) {
-  render(pointsListElement, new NoPointView(), RenderPosition.AFTERBEGIN);
+  render(pointsListElement, new NoPointsView(), RenderPosition.AFTERBEGIN);
 } else {
-  render(pointsElement, new SortView(), RenderPosition.BEFOREEND);
+  render(pointsListElement, new SortView(), RenderPosition.BEFOREEND);
   for (let i = 1; i < POINT_COUNT; i++) {
     renderPoint(pointsListElement, points[i]);
   }
