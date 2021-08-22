@@ -1,5 +1,6 @@
 import {OFFERS} from '../mock/const.js';
-import {createElement, getFullDateFormatted} from '../utils.js';
+import {getFullDateFormatted} from '../utils/point';
+import AbstractView from './abstract';
 
 const createEditFormTemplate = (point) => {
   const {type, city, timeFrom, timeTo, price, destination} = point;
@@ -156,25 +157,34 @@ const createEditFormTemplate = (point) => {
   </li>`;
 };
 
-export default class EditForm {
+export default class EditForm extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createEditFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _clickHandler() {
+    this._callback.click();
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._clickHandler);
   }
 }

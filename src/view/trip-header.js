@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const getTripPrice = (points) => {
   let tripPrice = 0;
@@ -25,25 +25,13 @@ const createTripHeaderTemplate = (points) => (
   </section>`
 );
 
-export default class TripHeader {
+export default class TripHeader extends AbstractView {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripHeaderTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
