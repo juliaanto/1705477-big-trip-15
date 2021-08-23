@@ -6,6 +6,7 @@ import NavigationView from '../view/navigation';
 import SortView from '../view/sort';
 import {render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
+import {updateItem} from '../utils/common';
 
 export default class Trip {
   constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer) {
@@ -22,6 +23,8 @@ export default class Trip {
     this._filtersComponent = new FiltersView();
     this._navigationComponent = new NavigationView();
     this._sortComponent = new SortView();
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points) {
@@ -31,6 +34,11 @@ export default class Trip {
 
     this._renderSiteHeader();
     this._renderPointsList(points);
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._points = updateItem(this._points, updatedPoint);
+    this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
   _renderTripHeader() {
