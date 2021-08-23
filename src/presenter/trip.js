@@ -1,20 +1,21 @@
-import TripHeaderView from './view/trip-header';
-import NoPointsView from './view/no-points';
-import PointsListView from './view/points-list';
-import FiltersView from './view/filters';
-import NavigationView from './view/navigation';
-import SortView from './view/sort';
+import TripHeaderView from '../view/trip-header';
+import NoPointsView from '../view/no-points';
+import PointsListView from '../view/points-list';
+import FiltersView from '../view/filters';
+import NavigationView from '../view/navigation';
+import SortView from '../view/sort';
 import {render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
 
-const POINT_COUNT = 20;
-
 export default class Trip {
-  constructor(siteHeaderContainer, siteMainContainer) {
+  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer) {
     this._siteHeaderContainer = siteHeaderContainer;
-    this._siteMainContainer = siteMainContainer;
+    this._siteNavigationContainer = siteNavigationContainer;
+    this._filtersContainer = filtersContainer;
+    this._pointsContainer = pointsContainer;
+    this._tripHeaderContainer = tripHeaderContainer;
 
-    this._tripHeaderComponent = new TripHeaderView();
+    this._tripHeaderComponent = null;
     this._noPointComponent = new NoPointsView();
     this._pointsListComponent = new PointsListView();
     this._filtersComponent = new FiltersView();
@@ -25,30 +26,30 @@ export default class Trip {
   init(points) {
     this._points = points.slice();
 
+    this._tripHeaderComponent = new TripHeaderView(points);
+
     this._renderSiteHeader();
-    this._renderPointsList();
+    this._renderPointsList(points);
   }
 
   _renderTripHeader() {
-    render(this._siteHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderNavigation() {
-
+    render(this._siteNavigationContainer, this._navigationComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilters() {
-
+    render(this._filtersContainer, this._filtersComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
-    render(pointsListElement, new SortView(), RenderPosition.BEFOREEND);
-    render()
-
+    render(this._pointsListComponent, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoints() {
-
+    render(this._pointsListComponent, this._noPointComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
@@ -63,19 +64,18 @@ export default class Trip {
   }
 
   _renderSiteHeader() {
-    this._renderTripHeader();
     this._renderNavigation();
     this._renderFilters();
   }
 
   _renderPointsList(points) {
+    render(this._pointsContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
     if (points.length === 0) {
       this._renderNoPoints();
     } else {
+      this._renderTripHeader();
       this._renderSort();
-      this._renderPoints(points, 1, POINT_COUNT);
-
+      this._renderPoints(points, 0, points.length);
     }
   }
-
 }

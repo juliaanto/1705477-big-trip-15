@@ -2,7 +2,7 @@ import {OFFERS} from '../mock/const.js';
 import {getFullDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
-const createEditFormTemplate = (point) => {
+const createPointEditTemplate = (point) => {
   const {type, city, timeFrom, timeTo, price, destination} = point;
 
   const timeFromFormatted = timeFrom !== null
@@ -166,7 +166,7 @@ export default class EditForm extends AbstractView {
   }
 
   getTemplate() {
-    return createEditFormTemplate(this._point);
+    return createPointEditTemplate(this._point);
   }
 
   _formSubmitHandler(evt) {
