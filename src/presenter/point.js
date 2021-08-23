@@ -1,6 +1,6 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
-import {render, RenderPosition, replace} from '../utils/render';
+import {remove, render, RenderPosition, replace} from '../utils/render';
 
 export default class Point {
   constructor(pointsListContainer) {
@@ -18,6 +18,9 @@ export default class Point {
   init(point) {
     this._point = point;
 
+    const prevPointComponent = this._pointComponent;
+    const prevPointEditComponent = this._pointEditComponent;
+
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new PointEditView(point);
 
@@ -25,7 +28,26 @@ export default class Point {
     this._pointEditComponent.setClickHandler(this._handleCloseEditFormClick);
     this._pointEditComponent.setClickHandler(this._handleFormSubmit);
 
-    render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._pointsListContainer.getElement().contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._pointsListContainer.getElement().contains(prevPointEditComponent.getElement())) {
+      replace(this._pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._pointEditComponent);
   }
 
   _replacePointToForm() {
