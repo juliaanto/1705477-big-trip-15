@@ -23,9 +23,11 @@ export const OFFERS = [
     type: 'taxi',
     offers: [
       {
+        name: 'event-offer-radio',
         title: 'Choose the radio station',
         price: 60,
       }, {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       },
@@ -35,9 +37,11 @@ export const OFFERS = [
     type: 'bus',
     offers: [
       {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       }, {
+        name: 'event-offer-luggage',
         title: 'Add luggage',
         price: 50,
       },
@@ -47,18 +51,23 @@ export const OFFERS = [
     type: 'train',
     offers: [
       {
+        name: 'event-offer-business',
         title: 'Upgrade to a business class',
         price: 120,
       }, {
+        name: 'event-offer-radio',
         title: 'Choose the radio station',
         price: 60,
       }, {
+        name: 'event-offer-meal',
         title: 'Choose meal',
         price: 180,
       }, {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       }, {
+        name: 'event-offer-luggage',
         title: 'Add luggage',
         price: 50,
       },
@@ -68,18 +77,23 @@ export const OFFERS = [
     type: 'ship',
     offers: [
       {
+        name: 'event-offer-business',
         title: 'Upgrade to a business class',
         price: 120,
       }, {
+        name: 'event-offer-radio',
         title: 'Choose the radio station',
         price: 60,
       }, {
+        name: 'event-offer-meal',
         title: 'Choose meal',
         price: 180,
       }, {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       }, {
+        name: 'event-offer-luggage',
         title: 'Add luggage',
         price: 50,
       },
@@ -89,6 +103,7 @@ export const OFFERS = [
     type: 'drive',
     offers: [
       {
+        name: 'event-offer-radio',
         title: 'Choose the radio station',
         price: 60,
       },
@@ -98,15 +113,19 @@ export const OFFERS = [
     type: 'flight',
     offers: [
       {
+        name: 'event-offer-business',
         title: 'Upgrade to a business class',
         price: 120,
       }, {
+        name: 'event-offer-meal',
         title: 'Choose meal',
         price: 180,
       }, {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       }, {
+        name: 'event-offer-luggage',
         title: 'Add luggage',
         price: 50,
       },
@@ -116,12 +135,15 @@ export const OFFERS = [
     type: 'check-in',
     offers: [
       {
+        name: 'event-offer-business',
         title: 'Upgrade to a business class',
         price: 120,
       }, {
+        name: 'event-offer-comfort',
         title: 'Upgrade to comfort class',
         price: 50,
       }, {
+        name: 'event-offer-luggage',
         title: 'Add luggage',
         price: 50,
       },
