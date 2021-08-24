@@ -2,7 +2,7 @@ import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils/poi
 import {OFFERS} from '../mock/const.js';
 import AbstractView from './abstract';
 
-const createTripEventTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {timeFrom, timeTo, type, city, price, isFavorite} = point;
 
   const favoriteEvent = isFavorite
@@ -71,15 +71,16 @@ const createTripEventTemplate = (point) => {
   </ul>`;
 };
 
-export default class TripEvent extends AbstractView {
+export default class Point extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createTripEventTemplate(this._point);
+    return createPointTemplate(this._point);
   }
 
   _editClickHandler(evt) {
@@ -87,8 +88,18 @@ export default class TripEvent extends AbstractView {
     this._callback.editClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
   }
 }
