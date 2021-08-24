@@ -1,4 +1,4 @@
-import {getDateFormatted, getTimeFormatted, getEventDuration} from '../utils/point';
+import {getDateFormatted, getTimeFormatted, getEventDuration, getDateHtmlFormatted, getDateTimeHtmlFormatted} from '../utils/point';
 import {OFFERS} from '../mock/const.js';
 import AbstractView from './abstract';
 
@@ -42,16 +42,16 @@ const createPointTemplate = (point) => {
   return `<ul class="trip-events__list">
     <li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${getDateFormatted(timeFrom)}</time>
+        <time class="event__date" datetime="${getDateHtmlFormatted(timeFrom)}">${getDateFormatted(timeFrom)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} ${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${getTimeFormatted(timeFrom)}</time>
+            <time class="event__start-time" datetime="${getDateTimeHtmlFormatted(timeFrom)}">${getTimeFormatted(timeFrom)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${getTimeFormatted(timeTo)}</time>
+            <time class="event__end-time" datetime="${getDateTimeHtmlFormatted(timeTo)}">${getTimeFormatted(timeTo)}</time>
           </p>
           <p class="event__duration">${getEventDuration(timeTo, timeFrom)}</p>
         </div>
