@@ -47,7 +47,9 @@ const shuffle = (array) => {
 
 const generatePictures = () => {
   const pictures = [];
-  for (let i = 0; i < PICTURES_MAX_COUNT; i++) {
+  const picturesCount = getRandomInteger(1, PICTURES_MAX_COUNT);
+
+  for (let i = 0; i < picturesCount; i++) {
     const randomNumber = getRandomInteger(1, 10000);
     const picture = `http://picsum.photos/248/152?r=${randomNumber}`;
     pictures.push(picture);

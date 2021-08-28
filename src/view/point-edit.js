@@ -1,4 +1,5 @@
 import {OFFERS} from '../mock/const.js';
+import { generatePictures } from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
@@ -38,13 +39,25 @@ const createPointEditTemplate = (point) => {
     return selectedOffersTemplate;
   };
 
+  const createPhotosTemplate = () => {
+    const photos = generatePictures();
+    let photosTemplate = '';
+
+    for (const photo of photos) {
+      photosTemplate += `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    }
+
+    return photosTemplate;
+
+  };
+
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -151,6 +164,11 @@ const createPointEditTemplate = (point) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${description}</p>
+          <div class="event__photos-container">
+          <div class="event__photos-tape">
+          ${createPhotosTemplate()}
+          </div>
+        </div>
         </section>
       </section>
     </form>
