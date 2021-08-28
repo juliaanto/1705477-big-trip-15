@@ -3,8 +3,8 @@ import { generatePictures } from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
-const createPointEditTemplate = (point) => {
-  const {type, city, timeFrom, timeTo, price, destination} = point;
+const createPointEditTemplate = (data) => {
+  const {id, type, city, timeFrom, timeTo, price, destination} = data;
 
   const timeFromFormatted = timeFrom !== null
     ? getFullDateFormatted(timeFrom)
@@ -26,8 +26,8 @@ const createPointEditTemplate = (point) => {
 
         for (const offer of offers) {
           selectedOffersTemplate += `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${point.id}" type="checkbox" name="${offer.name}">
-            <label class="event__offer-label" for="${offer.name}-${point.id}">
+            <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${id}" type="checkbox" name="${offer.name}">
+            <label class="event__offer-label" for="${offer.name}-${id}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -178,18 +178,18 @@ const createPointEditTemplate = (point) => {
 export default class EditForm extends AbstractView {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = EditForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._point);
+    return createPointEditTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(EditForm.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -204,5 +204,18 @@ export default class EditForm extends AbstractView {
   setClickHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._clickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 }
