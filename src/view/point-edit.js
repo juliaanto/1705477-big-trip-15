@@ -195,16 +195,25 @@ export default class EditForm extends AbstractView {
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
 
+    this._setInnerHandlers();
+  }
+
+  getTemplate() {
+    return createPointEditTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
     this.getElement()
       .querySelectorAll('.event__type-group input[type="radio"]')
       .forEach((input) => input.addEventListener('change', this._typeToggleHandler));
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('input', this._destinationInputHandler);
-  }
-
-  getTemplate() {
-    return createPointEditTemplate(this._data);
   }
 
   updateData(update) {
@@ -229,6 +238,8 @@ export default class EditForm extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
   }
 
   _typeToggleHandler(evt) {
