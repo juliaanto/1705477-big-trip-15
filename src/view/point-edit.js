@@ -1,7 +1,7 @@
 import {OFFERS} from '../mock/const.js';
 import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
-import AbstractView from './abstract';
+import SmartView from './smart.js';
 
 const createPointEditTemplate = (data) => {
   const {id, type, city, timeFrom, timeTo, price} = data;
@@ -186,7 +186,7 @@ const createPointEditTemplate = (data) => {
   </li>`;
 };
 
-export default class EditForm extends AbstractView {
+export default class EditForm extends SmartView {
   constructor(point) {
     super();
     this._data = EditForm.parsePointToData(point);
@@ -226,32 +226,6 @@ export default class EditForm extends AbstractView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._priceChangeHandler);
-  }
-
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   _typeToggleHandler(evt) {
