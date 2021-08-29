@@ -201,6 +201,12 @@ export default class EditForm extends SmartView {
     this._setInnerHandlers();
   }
 
+  reset(point) {
+    this.updateData(
+      EditForm.parsePointToData(point),
+    );
+  }
+
   getTemplate() {
     return createPointEditTemplate(this._data);
   }
@@ -208,6 +214,7 @@ export default class EditForm extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setClickHandler(this._callback.click);
   }
 
   _setInnerHandlers() {

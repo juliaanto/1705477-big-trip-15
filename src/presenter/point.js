@@ -21,6 +21,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleCloseEditFormClick = this._handleCloseEditFormClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._closeEditFormClickHandler = this._closeEditFormClickHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
@@ -69,6 +70,7 @@ export default class Point {
   _replacePointToForm() {
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
+    document.querySelector('.event--edit .event__rollup-btn').addEventListener('click', this._closeEditFormClickHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
@@ -82,8 +84,14 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();
     }
+  }
+
+  _closeEditFormClickHandler() {
+    this._pointEditComponent.reset(this._point);
+    this._replaceFormToPoint();
   }
 
   _handleEditClick() {
