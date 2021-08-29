@@ -193,7 +193,10 @@ export default class EditForm extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickHandler = this._clickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
-    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._timeFromChangeHandler = this._timeFromChangeHandler.bind(this);
+    this._timeToChangeHandler = this._timeToChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -213,7 +216,16 @@ export default class EditForm extends AbstractView {
       .forEach((input) => input.addEventListener('change', this._typeToggleHandler));
     this.getElement()
       .querySelector('.event__input--destination')
-      .addEventListener('input', this._destinationInputHandler);
+      .addEventListener('change', this._destinationChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-start-time"]')
+      .addEventListener('change', this._timeFromChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-end-time"]')
+      .addEventListener('change', this._timeToChangeHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._priceChangeHandler);
   }
 
   updateData(update) {
@@ -249,10 +261,31 @@ export default class EditForm extends AbstractView {
     });
   }
 
-  _destinationInputHandler(evt) {
+  _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       city: evt.target.value,
+    });
+  }
+
+  _timeFromChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      timeFrom: evt.target.value,
+    });
+  }
+
+  _timeToChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      timeTo: evt.target.value,
+    });
+  }
+
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value,
     });
   }
 
