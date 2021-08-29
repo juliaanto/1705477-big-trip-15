@@ -1,10 +1,10 @@
 import {OFFERS} from '../mock/const.js';
-import {generatePictures} from '../mock/util.js';
+import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
 const createPointEditTemplate = (data) => {
-  const {id, type, city, timeFrom, timeTo, price, destination} = data;
+  const {id, type, city, timeFrom, timeTo, price} = data;
 
   const timeFromFormatted = timeFrom !== null
     ? getFullDateFormatted(timeFrom)
@@ -14,7 +14,28 @@ const createPointEditTemplate = (data) => {
     ? getFullDateFormatted(timeTo)
     : '';
 
-  const description = destination.description;
+  const getDescription = () => {
+    for (const destination of destinations) {
+      if (city === destination.city) {
+        return destination.description;
+      }
+    }
+  };
+
+  const createPhotosTemplate = () => {
+    let photosTemplate = '';
+
+    for (const destination of destinations) {
+      if (city === destination.city) {
+        const photos = destination.pictures;
+        for (const photo of photos) {
+          photosTemplate += `<img class="event__photo" src="${photo}" alt="Event photo">`;
+        }
+      }
+    }
+
+    return photosTemplate;
+  };
 
   const createAvailableOffersTemplate = () => {
 
@@ -37,18 +58,6 @@ const createPointEditTemplate = (data) => {
       }
     }
     return selectedOffersTemplate;
-  };
-
-  const createPhotosTemplate = () => {
-    const photos = generatePictures();
-    let photosTemplate = '';
-
-    for (const photo of photos) {
-      photosTemplate += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-    }
-
-    return photosTemplate;
-
   };
 
   const checkType = (value) => type === value ? 'checked' : '';
@@ -165,7 +174,7 @@ const createPointEditTemplate = (data) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${getDescription()}</p>
           <div class="event__photos-container">
           <div class="event__photos-tape">
           ${createPhotosTemplate()}
@@ -183,6 +192,15 @@ export default class EditForm extends AbstractView {
     this._data = EditForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._clickHandler = this._clickHandler.bind(this);
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+
+    this.getElement()
+      .querySelectorAll('.event__type-group input[type="radio"]')
+      .forEach((input) => input.addEventListener('change', this._typeToggleHandler));
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this._destinationInputHandler);
   }
 
   getTemplate() {
@@ -211,6 +229,20 @@ export default class EditForm extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+  }
+
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      city: evt.target.value,
+    });
   }
 
   _formSubmitHandler(evt) {

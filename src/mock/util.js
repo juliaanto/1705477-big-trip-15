@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {MINUTES_FROM_MAX_GAP, MINUTES_TO_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
+import {DESCRIPTIONS, DESCRIPTIONS_MAX_COUNT, DESCRIPTIONS_MIN_COUNT, MINUTES_FROM_MAX_GAP, MINUTES_TO_MAX_GAP, PICTURES_MAX_COUNT} from './const.js';
 
 /**
  * Генерирует случайное число из диапазона
@@ -68,5 +68,33 @@ const getTimeTo = (timeFrom) => {
   const randomTime = dayjs(timeFrom).add(minutesGap, 'minute').toDate();
   return randomTime;
 };
+
+export const destinations = [
+  {
+    city: 'Amsterdam',
+    description: shuffle(DESCRIPTIONS).slice(0, getRandomInteger(DESCRIPTIONS_MIN_COUNT, DESCRIPTIONS_MAX_COUNT)).join(' '),
+    pictures: generatePictures(),
+  },
+  {
+    city: 'Chamonix',
+    description: shuffle(DESCRIPTIONS).slice(0, getRandomInteger(DESCRIPTIONS_MIN_COUNT, DESCRIPTIONS_MAX_COUNT)).join(' '),
+    pictures: generatePictures(),
+  },
+  {
+    city: 'Geneva',
+    description: shuffle(DESCRIPTIONS).slice(0, getRandomInteger(DESCRIPTIONS_MIN_COUNT, DESCRIPTIONS_MAX_COUNT)).join(' '),
+    pictures: generatePictures(),
+  },
+  {
+    city: 'Bern',
+    description: shuffle(DESCRIPTIONS).slice(0, getRandomInteger(DESCRIPTIONS_MIN_COUNT, DESCRIPTIONS_MAX_COUNT)).join(' '),
+    pictures: generatePictures(),
+  },
+  {
+    city: 'Milan',
+    description: shuffle(DESCRIPTIONS).slice(0, getRandomInteger(DESCRIPTIONS_MIN_COUNT, DESCRIPTIONS_MAX_COUNT)).join(' '),
+    pictures: generatePictures(),
+  },
+];
 
 export {getRandomInteger, generateRandomElement, shuffle, generatePictures, getRandomTime, getTimeTo};
