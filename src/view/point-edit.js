@@ -191,7 +191,7 @@ export default class EditForm extends SmartView {
     super();
     this._data = EditForm.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._clickHandler = this._clickHandler.bind(this);
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._timeFromChangeHandler = this._timeFromChangeHandler.bind(this);
@@ -214,7 +214,7 @@ export default class EditForm extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setClickHandler(this._callback.click);
+    this.setRollupButtonClickHandler(this._callback.click);
   }
 
   _setInnerHandlers() {
@@ -280,13 +280,13 @@ export default class EditForm extends SmartView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  _clickHandler() {
+  _rollupButtonClickHandler() {
     this._callback.click();
   }
 
-  setClickHandler(callback) {
+  setRollupButtonClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._clickHandler);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
 
   static parsePointToData(point) {
