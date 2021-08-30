@@ -62,6 +62,7 @@ export default class Point {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();
     }
   }
