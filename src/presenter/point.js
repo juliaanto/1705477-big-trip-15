@@ -34,8 +34,8 @@ export default class Point {
     this._pointEditComponent = new PointEditView(point);
 
     this._pointComponent.setEditClickHandler(this._handleEditClick);
-    this._pointEditComponent.setClickHandler(this._handleCloseEditFormClick);
-    this._pointEditComponent.setClickHandler(this._handleFormSubmit);
+    this._pointEditComponent.setRollupButtonClickHandler(this._handleCloseEditFormClick);
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -62,6 +62,7 @@ export default class Point {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();
     }
   }
@@ -82,6 +83,7 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();
     }
   }
@@ -107,6 +109,7 @@ export default class Point {
   }
 
   _handleCloseEditFormClick() {
+    this._pointEditComponent.reset(this._point);
     this._replaceFormToPoint();
   }
 }
