@@ -2,6 +2,9 @@ import {OFFERS} from '../mock/const.js';
 import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createPointEditTemplate = (data) => {
   const {id, type, city, timeFrom, timeTo, price} = data;
@@ -190,6 +193,8 @@ export default class EditForm extends SmartView {
   constructor(point) {
     super();
     this._data = EditForm.parsePointToData(point);
+    this._datepicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
@@ -199,6 +204,7 @@ export default class EditForm extends SmartView {
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(point) {
@@ -213,8 +219,41 @@ export default class EditForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollupButtonClickHandler(this._callback.click);
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('input[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        maxDate: this._data.timeTo,
+        defaultDate: this._data.timeFrom,
+        onChange: this._timeFromChangeHandler,
+      },
+    );
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('input[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        minDate: this._data.timeFrom,
+        defaultDate: this._data.timeTo,
+        onChange: this._timeToChangeHandler,
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -224,12 +263,6 @@ export default class EditForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
-    this.getElement()
-      .querySelector('input[name="event-start-time"]')
-      .addEventListener('change', this._timeFromChangeHandler);
-    this.getElement()
-      .querySelector('input[name="event-end-time"]')
-      .addEventListener('change', this._timeToChangeHandler);
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._priceChangeHandler);
@@ -249,17 +282,15 @@ export default class EditForm extends SmartView {
     });
   }
 
-  _timeFromChangeHandler(evt) {
-    evt.preventDefault();
+  _timeFromChangeHandler([userDateFrom]) {
     this.updateData({
-      timeFrom: evt.target.value,
+      timeFrom: userDateFrom,
     });
   }
 
-  _timeToChangeHandler(evt) {
-    evt.preventDefault();
+  _timeToChangeHandler([userDateTo]) {
     this.updateData({
-      timeTo: evt.target.value,
+      timeTo: userDateTo,
     });
   }
 
