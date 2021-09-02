@@ -11,7 +11,8 @@ import {SortType} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
 
 export default class Trip {
-  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer) {
+  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._siteHeaderContainer = siteHeaderContainer;
     this._siteNavigationContainer = siteNavigationContainer;
     this._filtersContainer = filtersContainer;
@@ -40,6 +41,10 @@ export default class Trip {
     this._renderSiteHeader();
     this._sortPoints(this._currentSortType);
     this._renderPointsList();
+  }
+
+  _getPoints() {
+    return this._pointsModel._getPoints();
   }
 
   _handleSortTypeChange(sortType) {
