@@ -18,4 +18,4 @@ const pointsElement = siteMainElement.querySelector('.trip-events');
 
 const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel);
 
-tripPresenter.init(points);
+tripPresenter.init();
