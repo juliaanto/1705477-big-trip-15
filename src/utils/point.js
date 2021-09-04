@@ -3,7 +3,7 @@ import duration from 'dayjs/plugin/duration';
 
 dayjs.extend(duration);
 
-export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YY HH:mm');
+export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YYYY HH:mm');
 
 export const getDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('MMM D');
 
