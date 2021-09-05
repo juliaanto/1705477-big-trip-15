@@ -1,4 +1,5 @@
 import {generatePoint} from './mock/data.js';
+import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import TripPresenter from './presenter/trip';
 
@@ -8,6 +9,8 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
+
+const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
