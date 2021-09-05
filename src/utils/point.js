@@ -42,3 +42,7 @@ export const sortByDuration = (pointA, pointB) => {
 };
 
 export const sortByPrice = (pointA, pointB) => pointB.price - pointA.price;
+
+export const isTimeEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB, 's');
+
+export const isPriceEqual = (priceA, priceB) => priceA === priceB;
