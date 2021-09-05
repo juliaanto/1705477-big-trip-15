@@ -4,7 +4,7 @@ import PointsListView from '../view/points-list';
 import FiltersView from '../view/filters';
 import NavigationView from '../view/navigation';
 import SortView from '../view/sort';
-import {render, RenderPosition} from '../utils/render';
+import {remove, render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
 import {SortType, UpdateType, UserAction} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
@@ -20,12 +20,12 @@ export default class Trip {
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
 
+    this._sortComponent = null;
     this._tripHeaderComponent = null;
     this._noPointComponent = new NoPointsView();
     this._pointsListComponent = new PointsListView();
     this._filtersComponent = new FiltersView();
     this._navigationComponent = new NavigationView();
-    this._sortComponent = new SortView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -39,8 +39,7 @@ export default class Trip {
 
     this._tripHeaderComponent = new TripHeaderView(this._getPoints());
 
-    this._renderSiteHeader();
-    this._renderPointsList();
+    this._renderTrip();
   }
 
   _getPoints() {
@@ -60,8 +59,8 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearPointsList();
-    this._renderPointsList();
+    this._clearTrip();
+    this._renderTrip();
   }
 
   _handleModeChange() {
@@ -90,9 +89,13 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список
+        this._clearPointsList();
+        this._renderPointsList();
         break;
       case UpdateType.MAJOR:
         // - обновить весь маршрут (например, при переключении фильтра)
+        this._clearTrip({resetSortType: true});
+        this._renderTrip();
         break;
     }
   }
@@ -110,8 +113,14 @@ export default class Trip {
   }
 
   _renderSort() {
-    render(this._pointsListComponent, this._sortComponent, RenderPosition.BEFOREEND);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._pointsListComponent, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoints() {
@@ -139,16 +148,36 @@ export default class Trip {
   }
 
   _renderPointsList() {
-    const pointsCount = this._getPoints().length;
-    const points = this._getPoints().slice();
-
     render(this._pointsContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
+  }
+
+  _clearTrip({resetSortType = false} = {}) {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
+
+    remove(this._sortComponent);
+    remove(this._noPointComponent);
+    remove(this._tripHeaderComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
+    }
+  }
+
+  _renderTrip() {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    this._renderSiteHeader();
+
     if (pointsCount === 0) {
       this._renderNoPoints();
-    } else {
-      this._renderTripHeader();
-      this._renderSort();
-      this._renderPoints(points);
+      return;
     }
+
+    this._renderTripHeader();
+    this._renderSort();
+    this._renderPointsList();
+    this._renderPoints(points.slice(0, pointsCount));
   }
 }
