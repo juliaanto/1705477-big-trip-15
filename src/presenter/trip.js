@@ -6,7 +6,7 @@ import NavigationView from '../view/navigation';
 import SortView from '../view/sort';
 import {render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
-import {SortType} from '../const';
+import {SortType, UpdateType, UserAction} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
 
 export default class Trip {
@@ -69,11 +69,32 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда изменилась цена)
+        this._pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список
+        break;
+      case UpdateType.MAJOR:
+        // - обновить весь маршрут (например, при переключении фильтра)
+        break;
+    }
   }
 
   _renderTripHeader() {
