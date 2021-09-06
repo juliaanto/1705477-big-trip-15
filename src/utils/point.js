@@ -30,7 +30,7 @@ export const getEventDuration = (timeTo, timeFrom) => {
   return eventDuration;
 };
 
-export const isFuture = (date) => dayjs().isBefore(date);
+export const isFuture = (date) => dayjs().isBefore(date, 's');
 
 export const sortByDate = (pointA, pointB) => dayjs(pointA.timeFrom).diff(dayjs(pointB.timeFrom));
 
