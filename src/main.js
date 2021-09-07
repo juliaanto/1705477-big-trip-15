@@ -4,7 +4,7 @@ import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
 import TripPresenter from './presenter/trip';
 
-const POINT_COUNT = 7;
+const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 

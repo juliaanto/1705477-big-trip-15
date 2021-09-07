@@ -1,4 +1,4 @@
-import {OFFERS} from '../mock/const.js';
+import {CITIES, OFFERS} from '../mock/const.js';
 import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import SmartView from './smart.js';
@@ -90,6 +90,18 @@ const createPointEditTemplate = (data) => {
 
   };
 
+  const createDestinationListValue = () => {
+    let destinationListValue = '';
+
+    if (CITIES.length > 0) {
+      for (const cityValue of CITIES) {
+        destinationListValue += `<option value="${cityValue}"></option>`;
+      }
+    }
+
+    return destinationListValue;
+  };
+
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -163,9 +175,7 @@ const createPointEditTemplate = (data) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city !== undefined ? city : ''}" list="destination-list-1" required>
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinationListValue()}
           </datalist>
         </div>
 
@@ -182,7 +192,7 @@ const createPointEditTemplate = (data) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price !== undefined ? price : ''}" required>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price !== undefined ? price : ''}" required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
