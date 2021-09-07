@@ -9,6 +9,7 @@ import PointPredenter from './point';
 import {FilterType, SortType, UpdateType, UserAction} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
 import {filter} from '../utils/filter.js';
+import PointNewPresenter from './point-new';
 
 export default class Trip {
   constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel) {
@@ -38,13 +39,18 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction);
   }
 
   init() {
-
-    this._tripHeaderComponent = new TripHeaderView(this._getPoints());
-
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
   }
 
   _getPoints() {
@@ -68,11 +74,12 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearTrip();
-    this._renderTrip();
+    this._clearPointsList();
+    this._renderPointsList();
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
@@ -93,16 +100,16 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда изменилась цена)
+        // - обновить часть списка (при изменении типа точки)
         this._pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список
+        // - обновить список (при фильтрации, сортировке)
         this._clearPointsList();
         this._renderPointsList();
         break;
       case UpdateType.MAJOR:
-        // - обновить весь маршрут (например, при переключении фильтра)
+        // - обновить весь маршрут (например, при добавлении/удалении точки, изменении дат начала/окончания, при изменении цены точки)
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         break;
@@ -110,6 +117,7 @@ export default class Trip {
   }
 
   _renderTripHeader() {
+    this._tripHeaderComponent = new TripHeaderView(this._getPoints());
     render(this._tripHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
   }
 
@@ -125,7 +133,7 @@ export default class Trip {
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
-    render(this._pointsListComponent, this._sortComponent, RenderPosition.BEFOREEND);
+    render(this._pointsContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoints() {
@@ -150,13 +158,20 @@ export default class Trip {
   _clearPointsList() {
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
+    remove(this._sortComponent);
   }
 
   _renderPointsList() {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    this._renderSort();
     render(this._pointsContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
+    this._renderPoints(points.slice(0, pointsCount));
   }
 
   _clearTrip({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
 
@@ -184,8 +199,7 @@ export default class Trip {
     }
 
     this._renderTripHeader();
-    this._renderSort();
     this._renderPointsList();
-    this._renderPoints(points.slice(0, pointsCount));
+
   }
 }

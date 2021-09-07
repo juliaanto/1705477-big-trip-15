@@ -4,7 +4,7 @@ const getTripPrice = (points) => {
   let tripPrice = 0;
 
   for (const point of points) {
-    tripPrice += point.price;
+    tripPrice += Number(point.price);
   }
 
   return tripPrice;

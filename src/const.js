@@ -21,3 +21,5 @@ export const FilterType = {
   FUTURE: 'future',
   PAST: 'past',
 };
+
+export const DEFAULT_POINT_TYPE = 'taxi';

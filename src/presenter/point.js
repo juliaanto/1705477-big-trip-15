@@ -99,7 +99,7 @@ export default class Point {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._point,
@@ -112,15 +112,14 @@ export default class Point {
 
   _handleFormSubmit(update) {
 
-    const isMinorUpdate =
+    const isMajorUpdate =
       !isTimeEqual(this._point.timeFrom, update.timeFrom) ||
       !isTimeEqual(this._point.timeTo, update.timeTo) ||
       !isPriceEqual(this._point.price, update.price);
 
-
     this._changeData(
       UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
       update,
     );
     this._replaceFormToPoint();
