@@ -221,7 +221,8 @@ export default class PointEdit extends SmartView {
   constructor(point) {
     super();
     this._data = PointEdit.parsePointToData(point);
-    this._datepicker = null;
+    this._datepickerTimeFrom = null;
+    this._datepickerTimeTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -239,9 +240,14 @@ export default class PointEdit extends SmartView {
   removeElement() {
     super.removeElement();
 
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._datepickerTimeFrom) {
+      this._datepickerTimeFrom.destroy();
+      this._datepickerTimeFrom = null;
+    }
+
+    if (this._datepickerTimeTo) {
+      this._datepickerTimeTo.destroy();
+      this._datepickerTimeTo = null;
     }
   }
 
@@ -264,12 +270,17 @@ export default class PointEdit extends SmartView {
   }
 
   _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._datepickerTimeFrom) {
+      this._datepickerTimeFrom.destroy();
+      this._datepickerTimeFrom = null;
     }
 
-    this._datepicker = flatpickr(
+    if (this._datepickerTimeTo) {
+      this._datepickerTimeTo.destroy();
+      this._datepickerTimeTo = null;
+    }
+
+    this._datepickerTimeFrom = flatpickr(
       this.getElement().querySelector('input[name="event-start-time"]'),
       {
         dateFormat: 'd/m/Y H:i',
@@ -281,7 +292,8 @@ export default class PointEdit extends SmartView {
         onChange: this._timeFromChangeHandler,
       },
     );
-    this._datepicker = flatpickr(
+
+    this._datepickerTimeTo = flatpickr(
       this.getElement().querySelector('input[name="event-end-time"]'),
       {
         dateFormat: 'd/m/Y H:i',
