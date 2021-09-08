@@ -2,7 +2,6 @@ import TripHeaderView from '../view/trip-header';
 import NoPointsView from '../view/no-points';
 import PointsListView from '../view/points-list';
 import FiltersView from '../view/filters';
-import NavigationView from '../view/navigation';
 import SortView from '../view/sort';
 import {remove, render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
@@ -30,7 +29,6 @@ export default class Trip {
 
     this._pointsListComponent = new PointsListView();
     this._filtersComponent = new FiltersView();
-    this._navigationComponent = new NavigationView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -121,10 +119,6 @@ export default class Trip {
     render(this._tripHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderNavigation() {
-    render(this._siteNavigationContainer, this._navigationComponent, RenderPosition.BEFOREEND);
-  }
-
   _renderSort() {
     if (this._sortComponent !== null) {
       this._sortComponent = null;
@@ -149,10 +143,6 @@ export default class Trip {
 
   _renderPoints(points) {
     points.forEach((point) => this._renderPoint(point));
-  }
-
-  _renderSiteHeader() {
-    this._renderNavigation();
   }
 
   _clearPointsList() {
@@ -190,8 +180,6 @@ export default class Trip {
   _renderTrip() {
     const points = this._getPoints();
     const pointsCount = points.length;
-
-    this._renderSiteHeader();
 
     if (pointsCount === 0) {
       this._renderNoPoints();
