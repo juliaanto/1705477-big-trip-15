@@ -29,20 +29,30 @@ render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
 const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 
+const handlePointNewFormClose = () => {
+  document.querySelector('.trip-main__event-add-btn').disabled = false;
+  navigationComponent.setMenuItem(MenuItem.TABLE);
+};
+
 const handleNavigationClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       // Скрыть статистику
-      // Показать маршрут
-      // Показать форму добавления новой точки
-      // Убрать выделение с NEW EVENT после сохранения
+      tripPresenter.destroy();
+      tripPresenter.init();
+      tripPresenter.createPoint(handlePointNewFormClose);
+      document.querySelector('.trip-main__event-add-btn').disabled = true;
+      navigationComponent.setMenuItem(menuItem);
       break;
     case MenuItem.TABLE:
-      // Показать маршрут
+      tripPresenter.destroy();
+      tripPresenter.init();
+      navigationComponent.setMenuItem(menuItem);
       // Скрыть статистику
       break;
     case MenuItem.STATS:
-      // Скрыть маршрут
+      tripPresenter.destroy();
+      navigationComponent.setMenuItem(menuItem);
       // Показать статистику
       break;
   }
@@ -50,11 +60,7 @@ const handleNavigationClick = (menuItem) => {
 
 navigationComponent.setTableClickHandler(handleNavigationClick);
 navigationComponent.setStatsClickHandler(handleNavigationClick);
+navigationComponent.setNewPointClickHandler(handleNavigationClick);
 
 filterPresenter.init();
 tripPresenter.init();
-
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-  evt.preventDefault();
-  tripPresenter.createPoint();
-});
