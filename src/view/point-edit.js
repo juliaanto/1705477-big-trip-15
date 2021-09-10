@@ -1,13 +1,19 @@
-import {OFFERS} from '../mock/const.js';
+import {CITIES, OFFERS} from '../mock/const.js';
 import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
-
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import {DEFAULT_POINT_TYPE} from '../const.js';
 
 const createPointEditTemplate = (data) => {
   const {id, type, city, timeFrom, timeTo, price} = data;
+
+  let pointType = DEFAULT_POINT_TYPE;
+
+  if (type !== undefined) {
+    pointType = type;
+  }
 
   const timeFromFormatted = timeFrom !== null
     ? getFullDateFormatted(timeFrom)
@@ -63,7 +69,38 @@ const createPointEditTemplate = (data) => {
     return selectedOffersTemplate;
   };
 
-  const checkType = (value) => type === value ? 'checked' : '';
+  const checkType = (value) => pointType === value ? 'checked' : '';
+
+  const createDestinationTemplate = () => {
+    let destinationTemplate = '';
+
+    if (city !== undefined) {
+      destinationTemplate += `<section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">${getDescription()}</p>
+          <div class="event__photos-container">
+          <div class="event__photos-tape">
+          ${createPhotosTemplate()}
+          </div>
+        </div>
+        </section>`;
+    }
+
+    return destinationTemplate;
+
+  };
+
+  const createDestinationListValue = () => {
+    let destinationListValue = '';
+
+    if (CITIES.length > 0) {
+      for (const cityValue of CITIES) {
+        destinationListValue += `<option value="${cityValue}"></option>`;
+      }
+    }
+
+    return destinationListValue;
+  };
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -71,7 +108,7 @@ const createPointEditTemplate = (data) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -134,22 +171,20 @@ const createPointEditTemplate = (data) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${type}
+            ${pointType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city !== undefined ? city : ''}" list="destination-list-1" required>
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinationListValue()}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${timeFromFormatted}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${timeFromFormatted}" required>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${timeToFormatted}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${timeToFormatted}" required>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -157,11 +192,11 @@ const createPointEditTemplate = (data) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price !== undefined ? price : ''}" required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">${id !== undefined ? 'Delete' : 'Cancel'}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -175,27 +210,22 @@ const createPointEditTemplate = (data) => {
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${getDescription()}</p>
-          <div class="event__photos-container">
-          <div class="event__photos-tape">
-          ${createPhotosTemplate()}
-          </div>
-        </div>
-        </section>
+        ${createDestinationTemplate()}
+
       </section>
     </form>
   </li>`;
 };
 
-export default class EditForm extends SmartView {
+export default class PointEdit extends SmartView {
   constructor(point) {
     super();
-    this._data = EditForm.parsePointToData(point);
-    this._datepicker = null;
+    this._data = PointEdit.parsePointToData(point);
+    this._datepickerTimeFrom = null;
+    this._datepickerTimeTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -207,9 +237,23 @@ export default class EditForm extends SmartView {
     this._setDatepicker();
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepickerTimeFrom) {
+      this._datepickerTimeFrom.destroy();
+      this._datepickerTimeFrom = null;
+    }
+
+    if (this._datepickerTimeTo) {
+      this._datepickerTimeTo.destroy();
+      this._datepickerTimeTo = null;
+    }
+  }
+
   reset(point) {
     this.updateData(
-      EditForm.parsePointToData(point),
+      PointEdit.parsePointToData(point),
     );
   }
 
@@ -222,15 +266,21 @@ export default class EditForm extends SmartView {
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollupButtonClickHandler(this._callback.click);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._datepickerTimeFrom) {
+      this._datepickerTimeFrom.destroy();
+      this._datepickerTimeFrom = null;
     }
 
-    this._datepicker = flatpickr(
+    if (this._datepickerTimeTo) {
+      this._datepickerTimeTo.destroy();
+      this._datepickerTimeTo = null;
+    }
+
+    this._datepickerTimeFrom = flatpickr(
       this.getElement().querySelector('input[name="event-start-time"]'),
       {
         dateFormat: 'd/m/Y H:i',
@@ -242,7 +292,8 @@ export default class EditForm extends SmartView {
         onChange: this._timeFromChangeHandler,
       },
     );
-    this._datepicker = flatpickr(
+
+    this._datepickerTimeTo = flatpickr(
       this.getElement().querySelector('input[name="event-end-time"]'),
       {
         dateFormat: 'd/m/Y H:i',
@@ -303,12 +354,22 @@ export default class EditForm extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EditForm.parseDataToPoint(this._data));
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   _rollupButtonClickHandler() {

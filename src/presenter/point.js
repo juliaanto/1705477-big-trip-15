@@ -1,6 +1,8 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {remove, render, RenderPosition, replace} from '../utils/render';
+import {UpdateType, UserAction} from '../const';
+import {isPriceEqual, isTimeEqual} from '../utils/point';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -22,6 +24,7 @@ export default class Point {
     this._handleCloseEditFormClick = this._handleCloseEditFormClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -37,6 +40,7 @@ export default class Point {
     this._pointEditComponent.setRollupButtonClickHandler(this._handleCloseEditFormClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -94,6 +98,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._point,
@@ -104,8 +110,27 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(update) {
+
+    const isMajorUpdate =
+      !isTimeEqual(this._point.timeFrom, update.timeFrom) ||
+      !isTimeEqual(this._point.timeTo, update.timeTo) ||
+      !isPriceEqual(this._point.price, update.price);
+
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
+      update,
+    );
     this._replaceFormToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
   }
 
   _handleCloseEditFormClick() {
