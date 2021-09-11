@@ -13,3 +13,5 @@ export const getPriceByType = (points, type) => {
 };
 
 export const makeItemsUpperCase = (items) => items.map((item) => item.toUpperCase());
+
+export const countPointsByType = (points, type) => points.filter((point) => point.type === type).length;

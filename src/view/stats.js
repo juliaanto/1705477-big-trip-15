@@ -1,6 +1,6 @@
 import {Chart} from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getPriceByType, makeItemsUniq, makeItemsUpperCase} from '../utils/stats.js';
+import {countPointsByType, getPriceByType, makeItemsUniq, makeItemsUpperCase} from '../utils/stats.js';
 import SmartView from './smart.js';
 
 const renderMoneyChart = (moneyCtx, points) => {
@@ -76,16 +76,19 @@ const renderMoneyChart = (moneyCtx, points) => {
 };
 
 
-const renderTypeChart = (typeCtx) => {
-  console.log();
+const renderTypeChart = (typeCtx, points) => {
+  const pointTypes = points.map((point) => point.type);
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const pointByTypeCounts = uniqTypes.map((type) => countPointsByType(points, type));
+  const uniqTypesUpperCase = makeItemsUpperCase(uniqTypes);
 
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: uniqTypesUpperCase,
       datasets: [{
-        data: [4, 3, 2, 1, 1, 1],
+        data: pointByTypeCounts,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -211,7 +214,7 @@ export default class Stats extends SmartView {
     timeCtx.height = BAR_HEIGHT * 5;
 
     this._moneyChart = renderMoneyChart(moneyCtx, points);
-    this._typeChart = renderTypeChart(typeCtx);
+    this._typeChart = renderTypeChart(typeCtx, points);
     this._timeSpendChart = renderTimeSpendChart(timeCtx);
   }
 }

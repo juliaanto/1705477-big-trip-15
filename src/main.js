@@ -8,7 +8,7 @@ import {remove, render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
 import StatsView from './view/stats.js';
 
-const POINT_COUNT = 20;
+const POINT_COUNT = 4;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
