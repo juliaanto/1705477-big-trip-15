@@ -50,12 +50,12 @@ const handleNavigationClick = (menuItem) => {
       break;
     case MenuItem.TABLE:
       remove(statsComponent);
-      tripPresenter.destroy();
-      tripPresenter.init();
+      tripPresenter.clearPointsList();
+      tripPresenter.renderPointsList();
       navigationComponent.setMenuItem(menuItem);
       break;
     case MenuItem.STATS:
-      tripPresenter.clearPointsList();
+      tripPresenter.clearPointsList({resetSortType: true});
       navigationComponent.setMenuItem(menuItem);
       statsComponent = new StatsView(pointsModel.getPoints());
       render(pageBodyElement, statsComponent, RenderPosition.BEFOREEND);

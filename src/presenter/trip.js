@@ -110,7 +110,7 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (при фильтрации, сортировке)
-        this.clearPointsList();
+        this.clearPointsList({resetSortType: true});
         this.renderPointsList();
         break;
       case UpdateType.MAJOR:
@@ -152,11 +152,15 @@ export default class Trip {
     points.forEach((point) => this._renderPoint(point));
   }
 
-  clearPointsList() {
+  clearPointsList({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
     remove(this._sortComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
+    }
   }
 
   renderPointsList() {
