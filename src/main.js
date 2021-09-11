@@ -4,8 +4,9 @@ import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
 import TripPresenter from './presenter/trip';
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
+import StatsView from './view/stats.js';
 
 const POINT_COUNT = 20;
 
@@ -22,6 +23,7 @@ const siteNavigationElement = siteHeaderElement.querySelector('.trip-controls__n
 const tripHeaderElement = siteHeaderElement.querySelector('.trip-main');
 const filtersElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const pointsElement = siteMainElement.querySelector('.trip-events');
+const pageBodyElement = siteMainElement.querySelector('.page-body__container');
 
 const navigationComponent = new NavigationView();
 render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
@@ -34,26 +36,29 @@ const handlePointNewFormClose = () => {
   navigationComponent.setMenuItem(MenuItem.TABLE);
 };
 
+let statsComponent = null;
+
 const handleNavigationClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
-      tripPresenter.destroy();
-      tripPresenter.init();
+      remove(statsComponent);
+      tripPresenter.clearPointsList();
+      tripPresenter.renderPointsList();
       tripPresenter.createPoint(handlePointNewFormClose);
       document.querySelector('.trip-main__event-add-btn').disabled = true;
       navigationComponent.setMenuItem(menuItem);
       break;
     case MenuItem.TABLE:
+      remove(statsComponent);
       tripPresenter.destroy();
       tripPresenter.init();
       navigationComponent.setMenuItem(menuItem);
-      // Скрыть статистику
       break;
     case MenuItem.STATS:
-      tripPresenter.destroy();
+      tripPresenter.clearPointsList();
       navigationComponent.setMenuItem(menuItem);
-      // Показать статистику
+      statsComponent = new StatsView(pointsModel.getPoints());
+      render(pageBodyElement, statsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
@@ -63,4 +68,5 @@ navigationComponent.setStatsClickHandler(handleNavigationClick);
 navigationComponent.setNewPointClickHandler(handleNavigationClick);
 
 filterPresenter.init();
-tripPresenter.init();
+// tripPresenter.init();
+render(pageBodyElement, new StatsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);

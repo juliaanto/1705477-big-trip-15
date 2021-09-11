@@ -79,8 +79,8 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearPointsList();
-    this._renderPointsList();
+    this.clearPointsList();
+    this.renderPointsList();
   }
 
   _handleModeChange() {
@@ -110,8 +110,8 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (при фильтрации, сортировке)
-        this._clearPointsList();
-        this._renderPointsList();
+        this.clearPointsList();
+        this.renderPointsList();
         break;
       case UpdateType.MAJOR:
         // - обновить весь маршрут (например, при добавлении/удалении точки, изменении дат начала/окончания, при изменении цены точки)
@@ -152,13 +152,14 @@ export default class Trip {
     points.forEach((point) => this._renderPoint(point));
   }
 
-  _clearPointsList() {
+  clearPointsList() {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
     remove(this._sortComponent);
   }
 
-  _renderPointsList() {
+  renderPointsList() {
     const points = this._getPoints();
     const pointsCount = points.length;
 
@@ -194,7 +195,7 @@ export default class Trip {
     }
 
     this._renderTripHeader();
-    this._renderPointsList();
+    this.renderPointsList();
 
   }
 }
