@@ -7,10 +7,18 @@ import StatsPresenter from './presenter/stats.js';
 import TripPresenter from './presenter/trip';
 import {render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
+import Api from './api.js';
 
 const POINT_COUNT = 20;
+const AUTHORIZATION = 'Basic 57b515a46ca6fab16';
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
