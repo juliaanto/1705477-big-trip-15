@@ -1,5 +1,6 @@
 import {Chart} from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {getEventDurationFromTimestamp} from '../utils/point.js';
 import {countPointsByType, getPriceByType, makeItemsUniq, makeItemsUpperCase} from '../utils/stats.js';
 import SmartView from './smart.js';
 
@@ -148,8 +149,86 @@ const renderTypeChart = (typeCtx, points) => {
   });
 };
 
-const renderTimeSpendChart = (timeCtx) => {
+const renderTimeSpendChart = (timeCtx, points) => {
+  const pointTypes = points.map((point) => point.type);
+  const uniqTypes = makeItemsUniq(pointTypes);
+  const uniqTypesUpperCase = makeItemsUpperCase(uniqTypes);
+  const pointByTypeDurations = uniqTypes.map((type) => {
+    let time = 0;
 
+    for(const point of points) {
+      if (point.type === type) {
+        time += point.timeTo - point.timeFrom;
+      }
+    }
+
+    return time;
+  });
+
+  return new Chart(timeCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: uniqTypesUpperCase,
+      datasets: [{
+        data: pointByTypeDurations,
+        backgroundColor: '#ffffff',
+        hoverBackgroundColor: '#ffffff',
+        anchor: 'start',
+      }],
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13,
+          },
+          color: '#000000',
+          anchor: 'end',
+          align: 'start',
+          formatter: (val) => `${(getEventDurationFromTimestamp(val))}`,
+        },
+      },
+      title: {
+        display: true,
+        text: 'TIME-SPEND',
+        fontColor: '#000000',
+        fontSize: 23,
+        position: 'left',
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#000000',
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+          barThickness: 44,
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+          minBarLength: 50,
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
+  });
 };
 
 const createStatsTemplate = () => (
@@ -215,6 +294,6 @@ export default class Stats extends SmartView {
 
     this._moneyChart = renderMoneyChart(moneyCtx, points);
     this._typeChart = renderTypeChart(typeCtx, points);
-    this._timeSpendChart = renderTimeSpendChart(timeCtx);
+    this._timeSpendChart = renderTimeSpendChart(timeCtx, points);
   }
 }

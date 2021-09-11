@@ -3,12 +3,12 @@ import {generatePoint} from './mock/data.js';
 import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
+import StatsPresenter from './presenter/stats.js';
 import TripPresenter from './presenter/trip';
-import {remove, render, RenderPosition} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
-import StatsView from './view/stats.js';
 
-const POINT_COUNT = 4;
+const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
@@ -30,18 +30,17 @@ render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
 
 const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
+const statsPresenter = new StatsPresenter(pageBodyElement, pointsModel);
 
 const handlePointNewFormClose = () => {
   document.querySelector('.trip-main__event-add-btn').disabled = false;
   navigationComponent.setMenuItem(MenuItem.TABLE);
 };
 
-let statsComponent = null;
-
 const handleNavigationClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      remove(statsComponent);
+      statsPresenter.desrtoy();
       tripPresenter.clearPointsList();
       tripPresenter.renderPointsList();
       tripPresenter.createPoint(handlePointNewFormClose);
@@ -49,7 +48,7 @@ const handleNavigationClick = (menuItem) => {
       navigationComponent.setMenuItem(menuItem);
       break;
     case MenuItem.TABLE:
-      remove(statsComponent);
+      statsPresenter.desrtoy();
       tripPresenter.clearPointsList();
       tripPresenter.renderPointsList();
       navigationComponent.setMenuItem(menuItem);
@@ -57,8 +56,17 @@ const handleNavigationClick = (menuItem) => {
     case MenuItem.STATS:
       tripPresenter.clearPointsList({resetSortType: true});
       navigationComponent.setMenuItem(menuItem);
-      statsComponent = new StatsView(pointsModel.getPoints());
-      render(pageBodyElement, statsComponent, RenderPosition.BEFOREEND);
+      statsPresenter.desrtoy();
+      statsPresenter.init();
+      navigationComponent.setFiltersClickHandler(handleNavigationClick);
+      break;
+    case MenuItem.FILTERS:
+      statsPresenter.desrtoy();
+      tripPresenter.clearPointsList();
+      tripPresenter.renderPointsList();
+      navigationComponent.setMenuItem(menuItem);
+      filterPresenter.init();
+      navigationComponent.removeFiltersClickHandler();
       break;
   }
 };
@@ -66,7 +74,7 @@ const handleNavigationClick = (menuItem) => {
 navigationComponent.setTableClickHandler(handleNavigationClick);
 navigationComponent.setStatsClickHandler(handleNavigationClick);
 navigationComponent.setNewPointClickHandler(handleNavigationClick);
+navigationComponent.setFiltersClickHandler(handleNavigationClick);
 
 filterPresenter.init();
-// tripPresenter.init();
-render(pageBodyElement, new StatsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
+tripPresenter.init();
