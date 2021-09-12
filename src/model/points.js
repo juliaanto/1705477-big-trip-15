@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import AbstractObserver from '../utils/abstract-observer.js';
 
 export default class Points extends AbstractObserver {
@@ -61,8 +62,8 @@ export default class Points extends AbstractObserver {
       {},
       point,
       {
-        timeFrom: point['date_from'],
-        timeTo: point['date_to'],
+        timeFrom: dayjs(point['date_from']).valueOf(),
+        timeTo: dayjs(point['date_to']).valueOf(),
         price: point['base_price'],
         isFavorite: point['is_favorite'],
       },
