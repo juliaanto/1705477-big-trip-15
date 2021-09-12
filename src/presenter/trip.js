@@ -122,7 +122,6 @@ export default class Trip {
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderTrip();
-        document.querySelector('.trip-main__event-add-btn').disabled = false;
         break;
     }
   }

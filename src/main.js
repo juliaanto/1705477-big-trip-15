@@ -1,12 +1,13 @@
-import {MenuItem, UpdateType} from './const.js';
+import {FilterType, MenuItem, UpdateType} from './const.js';
 import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
 import StatsPresenter from './presenter/stats.js';
 import TripPresenter from './presenter/trip';
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
 import Api from './api.js';
+import FiltersView from './view/filters.js';
 
 const AUTHORIZATION = 'Basic 57b515a46ca6fab16';
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
@@ -26,6 +27,7 @@ const pageBodyElement = siteMainElement.querySelector('.page-body__container');
 
 const navigationComponent = new NavigationView();
 render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
+document.querySelector('.trip-main__event-add-btn').disabled = true;
 
 const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
@@ -70,20 +72,28 @@ const handleNavigationClick = (menuItem) => {
   }
 };
 
-navigationComponent.setTableClickHandler(handleNavigationClick);
-navigationComponent.setStatsClickHandler(handleNavigationClick);
-navigationComponent.setNewPointClickHandler(handleNavigationClick);
-navigationComponent.setFiltersClickHandler(handleNavigationClick);
-
-filterPresenter.init();
+const filtersView = new FiltersView(FilterType.EVERYTHING);
+render(filtersElement, filtersView, RenderPosition.BEFOREEND);
 tripPresenter.init();
-
-document.querySelector('.trip-main__event-add-btn').disabled = true;
 
 api.getPoints()
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
+    navigationComponent.setTableClickHandler(handleNavigationClick);
+    navigationComponent.setStatsClickHandler(handleNavigationClick);
+    navigationComponent.setNewPointClickHandler(handleNavigationClick);
+    navigationComponent.setFiltersClickHandler(handleNavigationClick);
+    remove(filtersView);
+    filterPresenter.init();
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
+    navigationComponent.setTableClickHandler(handleNavigationClick);
+    navigationComponent.setStatsClickHandler(handleNavigationClick);
+    navigationComponent.setNewPointClickHandler(handleNavigationClick);
+    navigationComponent.setFiltersClickHandler(handleNavigationClick);
+    remove(filtersView);
+    filterPresenter.init();
   });
