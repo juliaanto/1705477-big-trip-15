@@ -29,7 +29,7 @@ const navigationComponent = new NavigationView();
 render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
 document.querySelector('.trip-main__event-add-btn').disabled = true;
 
-const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 const statsPresenter = new StatsPresenter(pageBodyElement, pointsModel);
 

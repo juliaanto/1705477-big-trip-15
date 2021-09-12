@@ -12,7 +12,7 @@ import PointNewPresenter from './point-new';
 import LoadingView from '../view/loading';
 
 export default class Trip {
-  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel) {
+  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._siteHeaderContainer = siteHeaderContainer;
@@ -24,6 +24,7 @@ export default class Trip {
     this._currentSortType = SortType.DAY;
     this._filterType = FilterType.EVERYTHING;
     this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = null;
     this._tripHeaderComponent = null;
@@ -94,7 +95,9 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);

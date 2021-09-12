@@ -73,7 +73,7 @@ const createPointEditTemplate = (data) => {
   };
 
   const createDestinationListValue = () => {
-    let destinationListValue = '';
+    const destinationListValue = '';
 
     // if (CITIES.length > 0) {
     //   for (const cityValue of CITIES) {
@@ -116,11 +116,6 @@ const createPointEditTemplate = (data) => {
               <div class="event__type-item">
                 <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship" ${checkType('ship')}>
                 <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport" ${checkType('transport')}>
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
               </div>
 
               <div class="event__type-item">

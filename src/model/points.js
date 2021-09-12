@@ -82,7 +82,7 @@ export default class Points extends AbstractObserver {
       {},
       point,
       {
-        'base_price': point.price,
+        'base_price': Number(point.price),
         'date_from': point.timeFrom,
         'date_to': point.timeTo,
         'is_favorite': point.isFavorite,
