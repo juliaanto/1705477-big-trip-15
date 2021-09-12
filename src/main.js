@@ -66,7 +66,7 @@ const handleNavigationClick = (menuItem) => {
       tripPresenter.clearPointsList();
       tripPresenter.renderPointsList();
       navigationComponent.setMenuItem(menuItem);
-      filterPresenter.init();
+      filterPresenter.init({resetFilterType: true});
       navigationComponent.removeFiltersClickHandler();
       break;
   }
@@ -83,7 +83,6 @@ api.getPoints()
     navigationComponent.setTableClickHandler(handleNavigationClick);
     navigationComponent.setStatsClickHandler(handleNavigationClick);
     navigationComponent.setNewPointClickHandler(handleNavigationClick);
-    navigationComponent.setFiltersClickHandler(handleNavigationClick);
     remove(filtersView);
     filterPresenter.init();
   })

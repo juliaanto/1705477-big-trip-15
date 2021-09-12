@@ -1,4 +1,4 @@
-import {UpdateType} from '../const.js';
+import {FilterType, UpdateType} from '../const.js';
 import {remove, render, RenderPosition, replace} from '../utils/render.js';
 import FilterView from '../view/filters.js';
 
@@ -17,10 +17,17 @@ export default class Filter {
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  init() {
+  init({resetFilterType = false} = {}) {
     const prevFilterComponent = this._filterComponent;
+    this._resertSortType = resetFilterType;
 
-    this._filterComponent = new FilterView(this._filterModel.getFilter());
+    let currentSortType = this._filterModel.getFilter();
+
+    if (resetFilterType === true) {
+      currentSortType = FilterType.EVERYTHING;
+    }
+
+    this._filterComponent = new FilterView(currentSortType);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
