@@ -1,5 +1,4 @@
-import {MenuItem} from './const.js';
-import {generatePoint} from './mock/data.js';
+import {MenuItem, UpdateType} from './const.js';
 import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
@@ -9,20 +8,12 @@ import {render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
 import Api from './api.js';
 
-const POINT_COUNT = 20;
 const AUTHORIZATION = 'Basic 57b515a46ca6fab16';
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
-const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getPoints().then((points) => {
-  console.log(points);
-});
-
 const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -86,3 +77,13 @@ navigationComponent.setFiltersClickHandler(handleNavigationClick);
 
 filterPresenter.init();
 tripPresenter.init();
+
+document.querySelector('.trip-main__event-add-btn').disabled = true;
+
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });

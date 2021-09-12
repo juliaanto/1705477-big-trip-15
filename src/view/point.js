@@ -1,10 +1,9 @@
 import {getDateFormatted, getTimeFormatted, getEventDuration, getDateHtmlFormatted, getDateTimeHtmlFormatted} from '../utils/point';
-import {OFFERS} from '../mock/const.js';
 import AbstractView from './abstract';
 import he from 'he';
 
 const createPointTemplate = (point) => {
-  const {timeFrom, timeTo, type, city, price, isFavorite} = point;
+  const {timeFrom, timeTo, type, destination, offers, price, isFavorite} = point;
 
   const favoriteEvent = isFavorite
     ? `<button class="event__favorite-btn  event__favorite-btn--active" type="button">
@@ -24,19 +23,14 @@ const createPointTemplate = (point) => {
 
     let selectedOffersTemplate = '';
 
-    for (const offerElement of OFFERS) {
-      if (type === offerElement.type) {
-        const offers = offerElement.offers;
-
-        for (const offer of offers) {
-          selectedOffersTemplate += `<li class="event__offer">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </li>`;
-        }
-      }
+    for (const offer of offers) {
+      selectedOffersTemplate += `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </li>`;
     }
+
     return selectedOffersTemplate;
   };
 
@@ -47,7 +41,7 @@ const createPointTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${he.encode(city)}</h3>
+        <h3 class="event__title">${type} ${he.encode(destination.name)}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${getDateTimeHtmlFormatted(timeFrom)}">${getTimeFormatted(timeFrom)}</time>

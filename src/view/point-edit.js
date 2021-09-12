@@ -1,5 +1,3 @@
-import {CITIES, OFFERS} from '../mock/const.js';
-import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -7,7 +5,7 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {DEFAULT_POINT_TYPE} from '../const.js';
 
 const createPointEditTemplate = (data) => {
-  const {id, type, city, timeFrom, timeTo, price} = data;
+  const {id, type, destination, offers, timeFrom, timeTo, price} = data;
 
   let pointType = DEFAULT_POINT_TYPE;
 
@@ -23,24 +21,11 @@ const createPointEditTemplate = (data) => {
     ? getFullDateFormatted(timeTo)
     : '';
 
-  const getDescription = () => {
-    for (const destination of destinations) {
-      if (city === destination.city) {
-        return destination.description;
-      }
-    }
-  };
-
   const createPhotosTemplate = () => {
     let photosTemplate = '';
 
-    for (const destination of destinations) {
-      if (city === destination.city) {
-        const photos = destination.pictures;
-        for (const photo of photos) {
-          photosTemplate += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-        }
-      }
+    for (const photo of destination.pictures) {
+      photosTemplate += `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
     }
 
     return photosTemplate;
@@ -50,22 +35,19 @@ const createPointEditTemplate = (data) => {
 
     let selectedOffersTemplate = '';
 
-    for (const offerElement of OFFERS) {
-      if (type === offerElement.type) {
-        const offers = offerElement.offers;
-
-        for (const offer of offers) {
-          selectedOffersTemplate += `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${id}" type="checkbox" name="${offer.name}">
-            <label class="event__offer-label" for="${offer.name}-${id}">
-              <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
-            </label>
-          </div>`;
-        }
+    if (offers !== undefined) {
+      for (const offer of offers) {
+        selectedOffersTemplate += `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" checked>
+          <label class="event__offer-label" for="${offer.title}-${id}">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
+          </label>
+        </div>`;
       }
     }
+
     return selectedOffersTemplate;
   };
 
@@ -74,10 +56,10 @@ const createPointEditTemplate = (data) => {
   const createDestinationTemplate = () => {
     let destinationTemplate = '';
 
-    if (city !== undefined) {
+    if (destination !== undefined) {
       destinationTemplate += `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${getDescription()}</p>
+          <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
           <div class="event__photos-tape">
           ${createPhotosTemplate()}
@@ -93,11 +75,11 @@ const createPointEditTemplate = (data) => {
   const createDestinationListValue = () => {
     let destinationListValue = '';
 
-    if (CITIES.length > 0) {
-      for (const cityValue of CITIES) {
-        destinationListValue += `<option value="${cityValue}"></option>`;
-      }
-    }
+    // if (CITIES.length > 0) {
+    //   for (const cityValue of CITIES) {
+    //     destinationListValue += `<option value="${cityValue}"></option>`;
+    //   }
+    // }
 
     return destinationListValue;
   };
@@ -173,7 +155,7 @@ const createPointEditTemplate = (data) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${pointType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city !== undefined ? city : ''}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination !== undefined ? destination.name : ''}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${createDestinationListValue()}
           </datalist>

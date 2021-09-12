@@ -9,6 +9,7 @@ import {FilterType, SortType, UpdateType, UserAction} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
 import {filter} from '../utils/filter.js';
 import PointNewPresenter from './point-new';
+import LoadingView from '../view/loading';
 
 export default class Trip {
   constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel) {
@@ -22,6 +23,7 @@ export default class Trip {
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
     this._filterType = FilterType.EVERYTHING;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._tripHeaderComponent = null;
@@ -29,6 +31,7 @@ export default class Trip {
 
     this._pointsListComponent = new PointsListView();
     this._filtersComponent = new FiltersView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -105,18 +108,21 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (при изменении типа точки)
         this._pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (при фильтрации, сортировке)
         this.clearPointsList({resetSortType: true});
         this.renderPointsList();
         break;
       case UpdateType.MAJOR:
-        // - обновить весь маршрут (например, при добавлении/удалении точки, изменении дат начала/окончания, при изменении цены точки)
         this._clearTrip({resetSortType: true});
         this._renderTrip();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTrip();
+        document.querySelector('.trip-main__event-add-btn').disabled = false;
         break;
     }
   }
@@ -152,6 +158,10 @@ export default class Trip {
     points.forEach((point) => this._renderPoint(point));
   }
 
+  _renderLoading() {
+    render(this._pointsContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   clearPointsList({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
@@ -179,6 +189,7 @@ export default class Trip {
 
     remove(this._sortComponent);
     remove(this._tripHeaderComponent);
+    remove(this._loadingComponent);
 
     if (this._noPointComponent) {
       remove(this._noPointComponent);
@@ -190,6 +201,11 @@ export default class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointsCount = points.length;
 
