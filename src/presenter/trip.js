@@ -2,7 +2,6 @@ import TripHeaderView from '../view/trip-header';
 import NoPointsView from '../view/no-points';
 import PointsListView from '../view/points-list';
 import FiltersView from '../view/filters';
-import NavigationView from '../view/navigation';
 import SortView from '../view/sort';
 import {remove, render, RenderPosition} from '../utils/render';
 import PointPredenter from './point';
@@ -30,27 +29,33 @@ export default class Trip {
 
     this._pointsListComponent = new PointsListView();
     this._filtersComponent = new FiltersView();
-    this._navigationComponent = new NavigationView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction);
   }
 
   init() {
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderTrip();
   }
 
-  createPoint() {
+  destroy() {
+    this._clearTrip({resetSortType: true});
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  createPoint(callback) {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init();
+    this._pointNewPresenter.init(callback);
   }
 
   _getPoints() {
@@ -74,8 +79,8 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearPointsList();
-    this._renderPointsList();
+    this.clearPointsList();
+    this.renderPointsList();
   }
 
   _handleModeChange() {
@@ -105,8 +110,8 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновить список (при фильтрации, сортировке)
-        this._clearPointsList();
-        this._renderPointsList();
+        this.clearPointsList({resetSortType: true});
+        this.renderPointsList();
         break;
       case UpdateType.MAJOR:
         // - обновить весь маршрут (например, при добавлении/удалении точки, изменении дат начала/окончания, при изменении цены точки)
@@ -119,10 +124,6 @@ export default class Trip {
   _renderTripHeader() {
     this._tripHeaderComponent = new TripHeaderView(this._getPoints());
     render(this._tripHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
-  }
-
-  _renderNavigation() {
-    render(this._siteNavigationContainer, this._navigationComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
@@ -151,17 +152,18 @@ export default class Trip {
     points.forEach((point) => this._renderPoint(point));
   }
 
-  _renderSiteHeader() {
-    this._renderNavigation();
-  }
-
-  _clearPointsList() {
+  clearPointsList({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
     remove(this._sortComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DAY;
+    }
   }
 
-  _renderPointsList() {
+  renderPointsList() {
     const points = this._getPoints();
     const pointsCount = points.length;
 
@@ -191,15 +193,13 @@ export default class Trip {
     const points = this._getPoints();
     const pointsCount = points.length;
 
-    this._renderSiteHeader();
-
     if (pointsCount === 0) {
       this._renderNoPoints();
       return;
     }
 
     this._renderTripHeader();
-    this._renderPointsList();
+    this.renderPointsList();
 
   }
 }

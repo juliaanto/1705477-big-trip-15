@@ -23,3 +23,10 @@ export const FilterType = {
 };
 
 export const DEFAULT_POINT_TYPE = 'taxi';
+
+export const MenuItem = {
+  ADD_NEW_POINT: 'ADD_NEW_POINT',
+  TABLE: 'TABLE',
+  STATS: 'STATS',
+  FILTERS: 'FILTERS',
+};

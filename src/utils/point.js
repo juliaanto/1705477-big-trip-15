@@ -13,22 +13,33 @@ export const getDateHtmlFormatted = (date) => date === undefined ? '' : dayjs(da
 
 export const getDateTimeHtmlFormatted = (date) => date === undefined ? '' : dayjs(date).format('YYYY-MM-DDTHH:mm');
 
-export const getEventDuration = (timeTo, timeFrom) => {
-  const durationUnformatted = dayjs.duration(dayjs(timeTo).diff(dayjs(timeFrom)));
-  const durationInHours = durationUnformatted.as('hours');
+const getDurationFormatted = (time) => {
+  const durationInHours = time.as('hours');
 
   let eventDuration = '';
 
   if (durationInHours < 1) {
-    eventDuration = durationUnformatted.format('mm[M]');
+    eventDuration = time.format('mm[M]');
   } else if (durationInHours >= 1 && durationInHours < 24) {
-    eventDuration = durationUnformatted.format('HH[H] mm[M]');
+    eventDuration = time.format('HH[H] mm[M]');
   } else {
-    eventDuration = durationUnformatted.format('DD[D] HH[H] mm[M]');
+    eventDuration = time.format('DD[D] HH[H] mm[M]');
   }
 
   return eventDuration;
 };
+
+export const getEventDuration = (timeTo, timeFrom) => {
+  const durationUnformatted = dayjs.duration(dayjs(timeTo).diff(dayjs(timeFrom)));
+  return getDurationFormatted(durationUnformatted);
+};
+
+export const getEventDurationFromTimestamp = (time) => {
+  const durationUnformatted = dayjs.duration(time);
+  return getDurationFormatted(durationUnformatted);
+};
+
+getEventDurationFromTimestamp(162120000);
 
 export const isFuture = (date) => dayjs().isBefore(date, 's');
 
