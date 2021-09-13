@@ -4,7 +4,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {DEFAULT_POINT_TYPE} from '../const.js';
 
-const createPointEditTemplate = (data) => {
+const createPointEditTemplate = (data, destinations) => {
   const {id, type, destination, offers, timeFrom, timeTo, price} = data;
 
   let pointType = DEFAULT_POINT_TYPE;
@@ -73,13 +73,11 @@ const createPointEditTemplate = (data) => {
   };
 
   const createDestinationListValue = () => {
-    const destinationListValue = '';
+    let destinationListValue = '';
 
-    // if (CITIES.length > 0) {
-    //   for (const cityValue of CITIES) {
-    //     destinationListValue += `<option value="${cityValue}"></option>`;
-    //   }
-    // }
+    for (const cityValue of destinations) {
+      destinationListValue += `<option value="${cityValue.name}"></option>`;
+    }
 
     return destinationListValue;
   };
@@ -195,9 +193,10 @@ const createPointEditTemplate = (data) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point) {
+  constructor(point, destinations) {
     super();
     this._data = PointEdit.parsePointToData(point);
+    this._destinations = destinations;
     this._datepickerTimeFrom = null;
     this._datepickerTimeTo = null;
 
@@ -235,7 +234,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data);
+    return createPointEditTemplate(this._data, this._destinations);
   }
 
   restoreHandlers() {

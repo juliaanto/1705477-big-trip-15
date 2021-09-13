@@ -4,7 +4,7 @@ import PointsListView from '../view/points-list';
 import FiltersView from '../view/filters';
 import SortView from '../view/sort';
 import {remove, render, RenderPosition} from '../utils/render';
-import PointPredenter from './point';
+import PointPresenter from './point';
 import {FilterType, SortType, UpdateType, UserAction} from '../const';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/point';
 import {filter} from '../utils/filter.js';
@@ -12,9 +12,10 @@ import PointNewPresenter from './point-new';
 import LoadingView from '../view/loading';
 
 export default class Trip {
-  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel, api) {
+  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel, destinationsModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._destinationsModel = destinationsModel;
     this._siteHeaderContainer = siteHeaderContainer;
     this._siteNavigationContainer = siteNavigationContainer;
     this._filtersContainer = filtersContainer;
@@ -39,7 +40,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction);
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction, this._destinationsModel);
   }
 
   init() {
@@ -151,7 +152,7 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPredenter(this._pointsListComponent, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointsListComponent, this._handleViewAction, this._handleModeChange, this._destinationsModel);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }
