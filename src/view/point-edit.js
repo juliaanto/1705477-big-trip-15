@@ -35,11 +35,23 @@ const createPointEditTemplate = (data, destinations, allOffers) => {
 
     let selectedOffersTemplate = '';
 
+    let currentType = DEFAULT_POINT_TYPE;
+    if (type !== undefined) {
+      currentType = type;
+    }
+
     for (const offersForCurrentType of allOffers) {
-      if (offersForCurrentType.type === type) {
+      if (offersForCurrentType.type === currentType) {
         for (const offer of offersForCurrentType.offers) {
 
-          const isOfferChecked = () => offers.find((checkedOffer) => checkedOffer.title === offer.title);
+          const isOfferChecked = () => {
+            if (offers !== undefined) {
+              return offers.find((checkedOffer) => checkedOffer.title === offer.title);
+            }
+
+            return false;
+          };
+
 
           selectedOffersTemplate += `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" ${isOfferChecked() ? 'checked' : ''}>

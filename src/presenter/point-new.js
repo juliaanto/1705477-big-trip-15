@@ -27,7 +27,7 @@ export default class PointNew {
 
     const destinations = this._destinationsModel.getDestinations();
     const offers = this._offersModel.getOffers();
-    this._pointEditComponent = new PointEditView(destinations, offers);
+    this._pointEditComponent = new PointEditView(null, destinations, offers);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
