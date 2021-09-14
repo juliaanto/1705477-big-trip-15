@@ -4,7 +4,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {DEFAULT_POINT_TYPE} from '../const.js';
 
-const createPointEditTemplate = (data, destinations) => {
+const createPointEditTemplate = (data, destinations, allOffers) => {
   const {id, type, destination, offers, timeFrom, timeTo, price} = data;
 
   let pointType = DEFAULT_POINT_TYPE;
@@ -35,16 +35,21 @@ const createPointEditTemplate = (data, destinations) => {
 
     let selectedOffersTemplate = '';
 
-    if (offers !== undefined) {
-      for (const offer of offers) {
-        selectedOffersTemplate += `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" checked>
-          <label class="event__offer-label" for="${offer.title}-${id}">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>`;
+    for (const offersForCurrentType of allOffers) {
+      if (offersForCurrentType.type === type) {
+        for (const offer of offersForCurrentType.offers) {
+
+          const isOfferChecked = () => offers.find((checkedOffer) => checkedOffer.title === offer.title);
+
+          selectedOffersTemplate += `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" ${isOfferChecked() ? 'checked' : ''}>
+            <label class="event__offer-label" for="${offer.title}-${id}">
+              <span class="event__offer-title">${offer.title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${offer.price}</span>
+            </label>
+          </div>`;
+        }
       }
     }
 
@@ -193,10 +198,11 @@ const createPointEditTemplate = (data, destinations) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point, destinations) {
+  constructor(point, destinations, allOffers) {
     super();
     this._data = PointEdit.parsePointToData(point);
     this._destinations = destinations;
+    this._allOffers = allOffers;
     this._datepickerTimeFrom = null;
     this._datepickerTimeTo = null;
 
@@ -208,6 +214,7 @@ export default class PointEdit extends SmartView {
     this._timeFromChangeHandler = this._timeFromChangeHandler.bind(this);
     this._timeToChangeHandler = this._timeToChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepicker();
@@ -234,7 +241,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data, this._destinations);
+    return createPointEditTemplate(this._data, this._destinations, this._allOffers);
   }
 
   restoreHandlers() {
@@ -293,6 +300,9 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._priceChangeHandler);
+    this.getElement()
+      .querySelectorAll('.event__offer-checkbox')
+      .forEach((input) => input.addEventListener('change', this._offersChangeHandler));
   }
 
   _typeToggleHandler(evt) {
@@ -338,6 +348,21 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       price: evt.target.value,
+    });
+  }
+
+  _offersChangeHandler(evt) {
+    evt.preventDefault();
+    const checkedOfferNames = [];
+    this.getElement().querySelectorAll('.event__offer-checkbox:checked').forEach((element) => {checkedOfferNames.push(element.name);});
+    const offersForCurrentType = this._allOffers.find((element) => element.type === this._data.type);
+    const checkedOffers = [];
+    checkedOfferNames.forEach((checkedOfferName) => {
+      checkedOffers.push(offersForCurrentType.offers.find((offer) => offer.title === checkedOfferName));
+    });
+
+    this.updateData({
+      offers: checkedOffers,
     });
   }
 

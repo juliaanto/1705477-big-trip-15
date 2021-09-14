@@ -9,6 +9,7 @@ import NavigationView from './view/navigation.js';
 import Api from './api.js';
 import FiltersView from './view/filters.js';
 import DestinationsModel from './model/destinations.js';
+import OffersModel from './model/offers.js';
 
 const AUTHORIZATION = 'Basic 57b515a46ca6fab16';
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
@@ -18,6 +19,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
@@ -31,7 +33,7 @@ const navigationComponent = new NavigationView();
 render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
 document.querySelector('.trip-main__event-add-btn').disabled = true;
 
-const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel, destinationsModel, api);
+const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel, destinationsModel, offersModel, api);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 const statsPresenter = new StatsPresenter(pageBodyElement, pointsModel);
 
@@ -78,10 +80,11 @@ const filtersView = new FiltersView(FilterType.EVERYTHING);
 render(filtersElement, filtersView, RenderPosition.BEFOREEND);
 
 
-Promise.all([api.getPoints(), api.getDestinations()])
+Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
   .then((data) => {
-    const [points, destinations] = data;
+    const [points, destinations, offers] = data;
     destinationsModel.setDestinations(destinations);
+    offersModel.setOffers(offers);
     tripPresenter.init();
     pointsModel.setPoints(UpdateType.INIT, points);
     document.querySelector('.trip-main__event-add-btn').disabled = false;
@@ -90,8 +93,6 @@ Promise.all([api.getPoints(), api.getDestinations()])
     navigationComponent.setNewPointClickHandler(handleNavigationClick);
     remove(filtersView);
     filterPresenter.init();
-
-
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
@@ -103,5 +104,4 @@ Promise.all([api.getPoints(), api.getDestinations()])
     navigationComponent.setFiltersClickHandler(handleNavigationClick);
     remove(filtersView);
     filterPresenter.init();
-
   });

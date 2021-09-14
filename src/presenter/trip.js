@@ -12,10 +12,11 @@ import PointNewPresenter from './point-new';
 import LoadingView from '../view/loading';
 
 export default class Trip {
-  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel, destinationsModel, api) {
+  constructor(siteHeaderContainer, siteNavigationContainer, filtersContainer, pointsContainer, tripHeaderContainer, pointsModel, filterModel, destinationsModel, offersModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._siteHeaderContainer = siteHeaderContainer;
     this._siteNavigationContainer = siteNavigationContainer;
     this._filtersContainer = filtersContainer;
@@ -40,7 +41,7 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction, this._destinationsModel);
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction, this._destinationsModel, this._offersModel);
   }
 
   init() {
@@ -152,7 +153,7 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListComponent, this._handleViewAction, this._handleModeChange, this._destinationsModel);
+    const pointPresenter = new PointPresenter(this._pointsListComponent, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersModel);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }
