@@ -4,6 +4,8 @@ import {getEventDurationFromTimestamp} from '../utils/point.js';
 import {countPointsByType, getPriceByType, makeItemsUniq, makeItemsUpperCase} from '../utils/stats.js';
 import SmartView from './smart.js';
 
+const BAR_HEIGHT = 55;
+
 const renderMoneyChart = (moneyCtx, points) => {
   const pointTypes = points.map((point) => point.type);
   const uniqTypes = makeItemsUniq(pointTypes);
@@ -287,7 +289,6 @@ export default class Stats extends SmartView {
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');
 
-    const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * 5;
     typeCtx.height = BAR_HEIGHT * 5;
     timeCtx.height = BAR_HEIGHT * 5;

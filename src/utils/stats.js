@@ -5,7 +5,7 @@ export const getPriceByType = (points, type) => {
 
   points.filter((point) => {
     if (point.type === type) {
-      priceByType += point.price;
+      priceByType += Number(point.price);
     }
   });
 

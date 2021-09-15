@@ -1,13 +1,11 @@
-import {CITIES, OFFERS} from '../mock/const.js';
-import {destinations} from '../mock/util.js';
 import {getFullDateFormatted} from '../utils/point';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {DEFAULT_POINT_TYPE} from '../const.js';
 
-const createPointEditTemplate = (data) => {
-  const {id, type, city, timeFrom, timeTo, price} = data;
+const createPointEditTemplate = (data, destinations, allOffers) => {
+  const {id, type, destination, offers, timeFrom, timeTo, price} = data;
 
   let pointType = DEFAULT_POINT_TYPE;
 
@@ -23,24 +21,11 @@ const createPointEditTemplate = (data) => {
     ? getFullDateFormatted(timeTo)
     : '';
 
-  const getDescription = () => {
-    for (const destination of destinations) {
-      if (city === destination.city) {
-        return destination.description;
-      }
-    }
-  };
-
   const createPhotosTemplate = () => {
     let photosTemplate = '';
 
-    for (const destination of destinations) {
-      if (city === destination.city) {
-        const photos = destination.pictures;
-        for (const photo of photos) {
-          photosTemplate += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-        }
-      }
+    for (const photo of destination.pictures) {
+      photosTemplate += `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
     }
 
     return photosTemplate;
@@ -50,14 +35,27 @@ const createPointEditTemplate = (data) => {
 
     let selectedOffersTemplate = '';
 
-    for (const offerElement of OFFERS) {
-      if (type === offerElement.type) {
-        const offers = offerElement.offers;
+    let currentType = DEFAULT_POINT_TYPE;
+    if (type !== undefined) {
+      currentType = type;
+    }
 
-        for (const offer of offers) {
+    for (const offersForCurrentType of allOffers) {
+      if (offersForCurrentType.type === currentType) {
+        for (const offer of offersForCurrentType.offers) {
+
+          const isOfferChecked = () => {
+            if (offers !== undefined) {
+              return offers.find((checkedOffer) => checkedOffer.title === offer.title);
+            }
+
+            return false;
+          };
+
+
           selectedOffersTemplate += `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${id}" type="checkbox" name="${offer.name}">
-            <label class="event__offer-label" for="${offer.name}-${id}">
+            <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" ${isOfferChecked() ? 'checked' : ''}>
+            <label class="event__offer-label" for="${offer.title}-${id}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -66,6 +64,7 @@ const createPointEditTemplate = (data) => {
         }
       }
     }
+
     return selectedOffersTemplate;
   };
 
@@ -74,10 +73,10 @@ const createPointEditTemplate = (data) => {
   const createDestinationTemplate = () => {
     let destinationTemplate = '';
 
-    if (city !== undefined) {
+    if (destination !== undefined) {
       destinationTemplate += `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${getDescription()}</p>
+          <p class="event__destination-description">${destination.description}</p>
           <div class="event__photos-container">
           <div class="event__photos-tape">
           ${createPhotosTemplate()}
@@ -93,10 +92,8 @@ const createPointEditTemplate = (data) => {
   const createDestinationListValue = () => {
     let destinationListValue = '';
 
-    if (CITIES.length > 0) {
-      for (const cityValue of CITIES) {
-        destinationListValue += `<option value="${cityValue}"></option>`;
-      }
+    for (const cityValue of destinations) {
+      destinationListValue += `<option value="${cityValue.name}"></option>`;
     }
 
     return destinationListValue;
@@ -137,11 +134,6 @@ const createPointEditTemplate = (data) => {
               </div>
 
               <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport" ${checkType('transport')}>
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-              </div>
-
-              <div class="event__type-item">
                 <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive" ${checkType('drive')}>
                 <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
               </div>
@@ -173,7 +165,7 @@ const createPointEditTemplate = (data) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${pointType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city !== undefined ? city : ''}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination !== undefined ? destination.name : ''}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${createDestinationListValue()}
           </datalist>
@@ -218,9 +210,11 @@ const createPointEditTemplate = (data) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point) {
+  constructor(point, destinations, allOffers) {
     super();
     this._data = PointEdit.parsePointToData(point);
+    this._destinations = destinations;
+    this._allOffers = allOffers;
     this._datepickerTimeFrom = null;
     this._datepickerTimeTo = null;
 
@@ -232,6 +226,7 @@ export default class PointEdit extends SmartView {
     this._timeFromChangeHandler = this._timeFromChangeHandler.bind(this);
     this._timeToChangeHandler = this._timeToChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepicker();
@@ -258,7 +253,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data);
+    return createPointEditTemplate(this._data, this._destinations, this._allOffers);
   }
 
   restoreHandlers() {
@@ -317,6 +312,9 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._priceChangeHandler);
+    this.getElement()
+      .querySelectorAll('.event__offer-checkbox')
+      .forEach((input) => input.addEventListener('change', this._offersChangeHandler));
   }
 
   _typeToggleHandler(evt) {
@@ -328,8 +326,21 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
+
+    let currentDestnation;
+
+    for (const destination of this._destinations) {
+      if (destination.name === evt.target.value) {
+        currentDestnation = destination;
+      }
+    }
+
     this.updateData({
-      city: evt.target.value,
+      destination: {
+        name: currentDestnation.name,
+        description: currentDestnation.description,
+        pictures: currentDestnation.pictures,
+      },
     });
   }
 
@@ -349,6 +360,21 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       price: evt.target.value,
+    });
+  }
+
+  _offersChangeHandler(evt) {
+    evt.preventDefault();
+    const checkedOfferNames = [];
+    this.getElement().querySelectorAll('.event__offer-checkbox:checked').forEach((element) => {checkedOfferNames.push(element.name);});
+    const offersForCurrentType = this._allOffers.find((element) => element.type === this._data.type);
+    const checkedOffers = [];
+    checkedOfferNames.forEach((checkedOfferName) => {
+      checkedOffers.push(offersForCurrentType.offers.find((offer) => offer.title === checkedOfferName));
+    });
+
+    this.updateData({
+      offers: checkedOffers,
     });
   }
 

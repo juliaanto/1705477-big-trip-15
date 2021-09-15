@@ -1,21 +1,25 @@
-import {MenuItem} from './const.js';
-import {generatePoint} from './mock/data.js';
+import {FilterType, MenuItem, UpdateType} from './const.js';
 import FilterModel from './model/filter.js';
 import PointsModel from './model/points.js';
 import FilterPresenter from './presenter/filter.js';
 import StatsPresenter from './presenter/stats.js';
 import TripPresenter from './presenter/trip';
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
 import NavigationView from './view/navigation.js';
+import Api from './api.js';
+import FiltersView from './view/filters.js';
+import DestinationsModel from './model/destinations.js';
+import OffersModel from './model/offers.js';
 
-const POINT_COUNT = 20;
+const AUTHORIZATION = 'Basic 57b515a46ca6fab16';
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
-const points = new Array(POINT_COUNT).fill().map(generatePoint);
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
 const filterModel = new FilterModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
@@ -27,8 +31,9 @@ const pageBodyElement = siteMainElement.querySelector('.page-body__container');
 
 const navigationComponent = new NavigationView();
 render(siteNavigationElement, navigationComponent, RenderPosition.BEFOREEND);
+document.querySelector('.trip-main__event-add-btn').disabled = true;
 
-const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(siteHeaderElement, siteNavigationElement, filtersElement, pointsElement, tripHeaderElement, pointsModel, filterModel, destinationsModel, offersModel, api);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 const statsPresenter = new StatsPresenter(pageBodyElement, pointsModel);
 
@@ -65,16 +70,38 @@ const handleNavigationClick = (menuItem) => {
       tripPresenter.clearPointsList();
       tripPresenter.renderPointsList();
       navigationComponent.setMenuItem(menuItem);
-      filterPresenter.init();
+      filterPresenter.init({resetFilterType: true});
       navigationComponent.removeFiltersClickHandler();
       break;
   }
 };
 
-navigationComponent.setTableClickHandler(handleNavigationClick);
-navigationComponent.setStatsClickHandler(handleNavigationClick);
-navigationComponent.setNewPointClickHandler(handleNavigationClick);
-navigationComponent.setFiltersClickHandler(handleNavigationClick);
+const filtersView = new FiltersView(FilterType.EVERYTHING);
+render(filtersElement, filtersView, RenderPosition.BEFOREEND);
 
-filterPresenter.init();
-tripPresenter.init();
+
+Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
+  .then((data) => {
+    const [points, destinations, offers] = data;
+    destinationsModel.setDestinations(destinations);
+    offersModel.setOffers(offers);
+    tripPresenter.init();
+    pointsModel.setPoints(UpdateType.INIT, points);
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
+    navigationComponent.setTableClickHandler(handleNavigationClick);
+    navigationComponent.setStatsClickHandler(handleNavigationClick);
+    navigationComponent.setNewPointClickHandler(handleNavigationClick);
+    remove(filtersView);
+    filterPresenter.init();
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+    tripPresenter.init();
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
+    navigationComponent.setTableClickHandler(handleNavigationClick);
+    navigationComponent.setStatsClickHandler(handleNavigationClick);
+    navigationComponent.setNewPointClickHandler(handleNavigationClick);
+    navigationComponent.setFiltersClickHandler(handleNavigationClick);
+    remove(filtersView);
+    filterPresenter.init();
+  });

@@ -39,8 +39,6 @@ export const getEventDurationFromTimestamp = (time) => {
   return getDurationFormatted(durationUnformatted);
 };
 
-getEventDurationFromTimestamp(162120000);
-
 export const isFuture = (date) => dayjs().isBefore(date, 's');
 
 export const sortByDate = (pointA, pointB) => dayjs(pointA.timeFrom).diff(dayjs(pointB.timeFrom));

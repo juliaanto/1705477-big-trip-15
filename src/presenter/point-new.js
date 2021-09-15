@@ -4,9 +4,11 @@ import {remove, render, RenderPosition} from '../utils/render';
 import PointEditView from '../view/point-edit';
 
 export default class PointNew {
-  constructor(pointsListContainer, changeData) {
+  constructor(pointsListContainer, changeData, destinationsModel, offersModel) {
     this._pointsListContainer = pointsListContainer;
     this._changeData = changeData;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
 
     this._pointEditComponent = null;
     this._destroyCallback = null;
@@ -23,7 +25,9 @@ export default class PointNew {
       return;
     }
 
-    this._pointEditComponent = new PointEditView();
+    const destinations = this._destinationsModel.getDestinations();
+    const offers = this._offersModel.getOffers();
+    this._pointEditComponent = new PointEditView(null, destinations, offers);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
