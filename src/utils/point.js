@@ -55,3 +55,11 @@ export const sortByPrice = (pointA, pointB) => pointB.price - pointA.price;
 export const isTimeEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB, 's');
 
 export const isPriceEqual = (priceA, priceB) => priceA === priceB;
+
+export const isOfferChecked = (pointOffers, offer) => {
+  if (pointOffers !== undefined) {
+    return pointOffers.find((pointOffer) => pointOffer.title === offer.title);
+  }
+
+  return false;
+};

@@ -1,4 +1,4 @@
-import {getFullDateFormatted} from '../utils/point';
+import {getFullDateFormatted, isOfferChecked} from '../utils/point';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -36,33 +36,23 @@ const createPointEditTemplate = (data, destinations, allOffers) => {
     let selectedOffersTemplate = '';
 
     let currentType = DEFAULT_POINT_TYPE;
+
     if (type !== undefined) {
       currentType = type;
     }
 
-    for (const offersForCurrentType of allOffers) {
-      if (offersForCurrentType.type === currentType) {
-        for (const offer of offersForCurrentType.offers) {
+    const offersForCurrentType = allOffers.find((element) => element.type === currentType);
 
-          const isOfferChecked = () => {
-            if (offers !== undefined) {
-              return offers.find((checkedOffer) => checkedOffer.title === offer.title);
-            }
+    for (const offer of offersForCurrentType.offers) {
 
-            return false;
-          };
-
-
-          selectedOffersTemplate += `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" ${isOfferChecked() ? 'checked' : ''}>
-            <label class="event__offer-label" for="${offer.title}-${id}">
-              <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
-            </label>
-          </div>`;
-        }
-      }
+      selectedOffersTemplate += `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="${offer.title}-${id}" type="checkbox" name="${offer.title}" ${isOfferChecked(offers, offer) ? 'checked' : ''}>
+        <label class="event__offer-label" for="${offer.title}-${id}">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>`;
     }
 
     return selectedOffersTemplate;
