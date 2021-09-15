@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import {DEFAULT_POINT_TYPE, UpdateType, UserAction} from '../const';
 import {remove, render, RenderPosition} from '../utils/render';
 import PointEditView from '../view/point-edit';
@@ -52,15 +51,21 @@ export default class PointNew {
   }
 
   _handleFormSubmit(point) {
-    let updatedType = DEFAULT_POINT_TYPE;
 
-    if (point.type !== undefined) {
-      updatedType = point.type;
+    if (point.type === undefined) {
+      point.type = DEFAULT_POINT_TYPE;
     }
+
+    if (point.offers === undefined) {
+      point.offers = [];
+    }
+
+    point.isFavorite = false;
+
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({id: nanoid(), type: updatedType}, point),
+      point,
     );
     this.destroy();
   }
