@@ -6,6 +6,10 @@ const getTripPrice = (points) => {
 
   for (const point of points) {
     tripPrice += Number(point.price);
+
+    for (const offer of point.offers) {
+      tripPrice += offer.price;
+    }
   }
 
   return tripPrice;

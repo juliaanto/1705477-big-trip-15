@@ -155,7 +155,7 @@ export default class Trip {
   }
 
   _renderTripHeader() {
-    this._tripHeaderComponent = new TripHeaderView(this._getPoints());
+    this._tripHeaderComponent = new TripHeaderView(this._pointsModel.getPoints());
     render(this._tripHeaderContainer, this._tripHeaderComponent, RenderPosition.AFTERBEGIN);
   }
 
