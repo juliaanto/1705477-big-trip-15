@@ -165,7 +165,7 @@ const createPointEditTemplate = (data, destinations, allOffers) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${pointType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination !== undefined ? destination.name : ''}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="search" name="event-destination" value="${destination !== undefined ? destination.name : ''}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list-1">
             ${createDestinationListValue()}
           </datalist>
@@ -327,13 +327,7 @@ export default class PointEdit extends SmartView {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
 
-    let currentDestnation;
-
-    for (const destination of this._destinations) {
-      if (destination.name === evt.target.value) {
-        currentDestnation = destination;
-      }
-    }
+    const currentDestnation = this._destinations.find((destination) => destination.name === evt.target.value);
 
     this.updateData({
       destination: {
