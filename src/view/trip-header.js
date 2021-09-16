@@ -1,3 +1,4 @@
+import {getDateFormatted} from '../utils/point';
 import AbstractView from './abstract';
 
 const getTripPrice = (points) => {
@@ -16,7 +17,7 @@ const createTripHeaderTemplate = (points) => (
     <div class="trip-info__main">
       <h1 class="trip-info__title">${points[0].destination.name}  &mdash; ... &mdash; ${points[points.length - 1].destination.name}</h1>
 
-      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+      <p class="trip-info__dates">${getDateFormatted(points[0].timeFrom)}&nbsp;&mdash;&nbsp;${getDateFormatted(points[points.length - 1].timeTo)}</p>
     </div>
 
     <p class="trip-info__cost">
