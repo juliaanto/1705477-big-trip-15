@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 dayjs.extend(duration);
+dayjs.extend(isSameOrBefore);
 
 export const getFullDateFormatted = (date) => date === undefined ? '' : dayjs(date).format('DD/MM/YYYY HH:mm');
 
@@ -39,7 +41,9 @@ export const getEventDurationFromTimestamp = (time) => {
   return getDurationFormatted(durationUnformatted);
 };
 
-export const isFuture = (date) => dayjs().isBefore(date, 's');
+export const isFuture = (date) => dayjs().isSameOrBefore(date, 's');
+
+export const isPast = (date) => dayjs().isAfter(date, 's');
 
 export const sortByDate = (pointA, pointB) => dayjs(pointA.timeFrom).diff(dayjs(pointB.timeFrom));
 
