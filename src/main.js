@@ -72,13 +72,13 @@ const handleNavigationClick = (menuItem) => {
 const filtersView = new FiltersView(FilterType.EVERYTHING);
 render(filtersElement, filtersView, RenderPosition.BEFOREEND);
 
+tripPresenter.init();
 
 Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
   .then((data) => {
     const [points, destinations, offers] = data;
     destinationsModel.setDestinations(destinations);
     offersModel.setOffers(offers);
-    tripPresenter.init();
     pointsModel.setPoints(UpdateType.INIT, points);
     document.querySelector('.trip-main__event-add-btn').disabled = false;
     navigationComponent.setTableClickHandler(handleNavigationClick);
@@ -89,12 +89,7 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
-    tripPresenter.init();
     document.querySelector('.trip-main__event-add-btn').disabled = false;
-    navigationComponent.setTableClickHandler(handleNavigationClick);
-    navigationComponent.setStatsClickHandler(handleNavigationClick);
-    navigationComponent.setNewPointClickHandler(handleNavigationClick);
-    navigationComponent.setFiltersClickHandler(handleNavigationClick);
     remove(filtersView);
-    filterPresenter.init();
+    filtersElement.querySelectorAll('.trip-filters__filter-input').forEach((element) => {element.disabled = true;});
   });

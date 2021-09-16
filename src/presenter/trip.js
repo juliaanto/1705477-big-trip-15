@@ -186,6 +186,7 @@ export default class Trip {
   }
 
   clearPointsList({resetSortType = false} = {}) {
+    remove(this._noPointComponent);
     this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
@@ -203,6 +204,10 @@ export default class Trip {
     this._renderSort();
     render(this._pointsContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
     this._renderPoints(points.slice(0, pointsCount));
+
+    if (this._getPoints().length === 0) {
+      this._renderNoPoints();
+    }
   }
 
   _clearTrip({resetSortType = false} = {}) {

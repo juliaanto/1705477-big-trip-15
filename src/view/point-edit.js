@@ -333,6 +333,7 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
+      offers: [],
     });
   }
 
