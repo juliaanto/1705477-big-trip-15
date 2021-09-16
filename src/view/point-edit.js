@@ -329,13 +329,23 @@ export default class PointEdit extends SmartView {
 
     const currentDestnation = this._destinations.find((destination) => destination.name === evt.target.value);
 
-    this.updateData({
-      destination: {
-        name: currentDestnation.name,
-        description: currentDestnation.description,
-        pictures: currentDestnation.pictures,
-      },
-    });
+    const input = this.getElement().querySelector('.event__input--destination');
+
+    if (currentDestnation === undefined) {
+      input.setCustomValidity('Выберите пункт назначения из предложенного списка');
+    } else {
+      input.setCustomValidity('');
+
+      this.updateData({
+        destination: {
+          name: currentDestnation.name,
+          description: currentDestnation.description,
+          pictures: currentDestnation.pictures,
+        },
+      });
+    }
+
+    input.reportValidity();
   }
 
   _timeFromChangeHandler([userDateFrom]) {
