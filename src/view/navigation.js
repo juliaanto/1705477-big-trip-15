@@ -15,7 +15,6 @@ export default class Navigation extends AbstractView {
     this._tableClickHandler = this._tableClickHandler.bind(this);
     this._statsClickHandler = this._statsClickHandler.bind(this);
     this._newPointClickHandler = this._newPointClickHandler.bind(this);
-    this._filtersClickHandler = this._filtersClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -50,20 +49,6 @@ export default class Navigation extends AbstractView {
   setNewPointClickHandler(callback) {
     this._callback.newPointClick = callback;
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', this._newPointClickHandler);
-  }
-
-  _filtersClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.filtersClick(MenuItem.FILTERS);
-  }
-
-  setFiltersClickHandler(callback) {
-    this._callback.filtersClick = callback;
-    document.querySelector('.trip-controls__filters').addEventListener('click', this._filtersClickHandler);
-  }
-
-  removeFiltersClickHandler() {
-    document.querySelector('.trip-controls__filters').removeEventListener('click', this._filtersClickHandler);
   }
 
   setMenuItem(menuItem) {

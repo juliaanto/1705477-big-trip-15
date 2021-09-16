@@ -57,21 +57,14 @@ const handleNavigationClick = (menuItem) => {
       tripPresenter.clearPointsList();
       tripPresenter.renderPointsList();
       navigationComponent.setMenuItem(menuItem);
+      filtersElement.querySelectorAll('.trip-filters__filter-input').forEach((element) => {element.disabled = false;});
       break;
     case MenuItem.STATS:
       tripPresenter.clearPointsList({resetSortType: true});
       navigationComponent.setMenuItem(menuItem);
       statsPresenter.desrtoy();
       statsPresenter.init();
-      navigationComponent.setFiltersClickHandler(handleNavigationClick);
-      break;
-    case MenuItem.FILTERS:
-      statsPresenter.desrtoy();
-      tripPresenter.clearPointsList();
-      tripPresenter.renderPointsList();
-      navigationComponent.setMenuItem(menuItem);
-      filterPresenter.init({resetFilterType: true});
-      navigationComponent.removeFiltersClickHandler();
+      filtersElement.querySelectorAll('.trip-filters__filter-input').forEach((element) => {element.disabled = true;});
       break;
   }
 };
