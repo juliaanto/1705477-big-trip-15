@@ -13,6 +13,7 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
+  AVERAGE: 'AVERAGE',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
 };

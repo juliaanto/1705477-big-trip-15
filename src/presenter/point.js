@@ -157,14 +157,14 @@ export default class Point {
 
   _handleFormSubmit(update) {
 
-    const isMajorUpdate =
+    const isAverageUpdate =
       !isTimeEqual(this._point.timeFrom, update.timeFrom) ||
       !isTimeEqual(this._point.timeTo, update.timeTo) ||
       !isPriceEqual(this._point.price, update.price);
 
     this._changeData(
       UserAction.UPDATE_POINT,
-      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
+      isAverageUpdate ? UpdateType.AVERAGE : UpdateType.PATCH,
       update,
     );
   }
@@ -172,7 +172,7 @@ export default class Point {
   _handleDeleteClick(point) {
     this._changeData(
       UserAction.DELETE_POINT,
-      UpdateType.MAJOR,
+      UpdateType.AVERAGE,
       point,
     );
   }

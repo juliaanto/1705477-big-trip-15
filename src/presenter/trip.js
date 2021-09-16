@@ -135,8 +135,12 @@ export default class Trip {
         this._pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.clearPointsList({resetSortType: true});
+        this.clearPointsList({resetSortType: false});
         this.renderPointsList();
+        break;
+      case UpdateType.AVERAGE:
+        this._clearTrip({resetSortType: false});
+        this._renderTrip();
         break;
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true});
