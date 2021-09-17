@@ -1,4 +1,4 @@
-import {DEFAULT_POINT_TYPE, UpdateType, UserAction} from '../const';
+import {DEFAULT_POINT_TYPE, isEscape, UpdateType, UserAction} from '../const';
 import {remove, render, RenderPosition} from '../utils/render';
 import PointEditView from '../view/point-edit';
 
@@ -93,7 +93,7 @@ export default class PointNew {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscape(evt)) {
       evt.preventDefault();
       this.destroy();
     }

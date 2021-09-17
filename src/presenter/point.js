@@ -1,7 +1,7 @@
 import PointView from '../view/point';
 import PointEditView from '../view/point-edit';
 import {remove, render, RenderPosition, replace} from '../utils/render';
-import {UpdateType, UserAction} from '../const';
+import {isEscape, UpdateType, UserAction} from '../const';
 import {isPriceEqual, isTimeEqual} from '../utils/point';
 
 const Mode = {
@@ -130,7 +130,7 @@ export default class Point {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscape(evt)) {
       evt.preventDefault();
       this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();

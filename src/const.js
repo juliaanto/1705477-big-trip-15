@@ -31,3 +31,5 @@ export const MenuItem = {
   TABLE: 'TABLE',
   STATS: 'STATS',
 };
+
+export const isEscape = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
