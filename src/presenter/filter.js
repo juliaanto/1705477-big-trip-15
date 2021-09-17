@@ -19,7 +19,6 @@ export default class Filter {
 
   init({resetFilterType = false} = {}) {
     const prevFilterComponent = this._filterComponent;
-    this._resertSortType = resetFilterType;
 
     let currentSortType = this._filterModel.getFilter();
 
