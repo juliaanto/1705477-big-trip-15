@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import {DEFAULT_POINT_TYPE, UpdateType, UserAction} from '../const';
 import {remove, render, RenderPosition} from '../utils/render';
 import PointEditView from '../view/point-edit';
@@ -51,18 +50,42 @@ export default class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
-  _handleFormSubmit(point) {
-    let updatedType = DEFAULT_POINT_TYPE;
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
 
-    if (point.type !== undefined) {
-      updatedType = point.type;
+  setAborting() {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._pointEditComponent.shake(resetFormState);
+  }
+
+  _handleFormSubmit(point) {
+
+    if (point.type === undefined) {
+      point.type = DEFAULT_POINT_TYPE;
     }
+
+    if (point.offers === undefined) {
+      point.offers = [];
+    }
+
+    point.isFavorite = false;
+
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({id: nanoid(), type: updatedType}, point),
+      point,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {
