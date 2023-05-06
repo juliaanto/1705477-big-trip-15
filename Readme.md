@@ -30,4 +30,4 @@ cd 1705477-big-trip-15
 npm install
 npm start
 ```
-The application will be available at [localhost:3000](http://localhost:3000).
+The application will be available at [localhost:8080](http://localhost:8080).
